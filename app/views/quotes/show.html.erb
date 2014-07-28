@@ -1,0 +1,310 @@
+<div id="notice"><%= notice %></div> 
+<!-- 
+<%= link_to 'Edit', edit_quote_path(@quote) %> |
+<%= link_to 'Back', quotes_path %>
+  -->
+
+
+
+<div id='orders'>
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <h1 class='pull-left'>
+        <i class='icon-inbox'></i>
+        <span>Devis </span> - <input class="input-lg" id="qtitle" value="<%= @quote.title %>" >
+      </h1>
+    </div>
+	  <div class='col-sm-12'>
+    <div class='row' id='detail'>
+      <div class='col-sm-12'>
+        <div class='box'>
+          <div class='box-content'>
+            
+            
+            <div class='clearfix'></div>
+            <table class='table table-bordered table-hover table-striped' id='table_quote'>
+              <thead>
+                <tr>
+                  <th>
+                  </th>
+                  <th>Désignation</th>
+                  <th>
+                    <div class='text-center'>Unité</div>
+                  </th>
+                  <th>
+                    <div class='text-center'>Quantité</div>
+                  </th>
+                  <th>
+                    <div class='text-center'>Prix unitaire</div>
+                  </th>
+                  <th>
+                    <div class='text-right'>Montant</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                 <% @hash.keys.each do |k| %>
+                 <div>
+                      <tr>
+                        <td width="5%">
+                            <div class='text-center'> 
+                              <a href="" onclick="deleteLine(this); return false;" class="index" id="<%=k%>"><i class="icon-trash"></i></a>
+                             </div>
+                        </td>
+                        <td width="45%"> 
+                        	<input class="form-control input-sm" id="description_<%=k%>" placeholder="Description" value="<%= @hash[k][0] %>">
+                        </td>
+                        <td width="10%">
+              				
+
+
+
+							             <select class="form-control input-sm" data-rule-required="true" id="unit_<%=k%>" name="validation_select">
+                              <option <%= "selected" if @hash[k][1]=="" %>></option>
+                              <option <%= "selected" if @hash[k][1]=="ml" %>>ml</option>
+                              <option <%= "selected" if @hash[k][1]=="m2" %>>m2</option>
+                              <option <%= "selected" if @hash[k][1]=="u" %>>u</option>
+                            </select>
+                        </td>
+                        <td width="5%">
+                          <div class='text-center'> 
+                          	<input class="form-control input-sm" id="qte_<%=k%>" placeholder="Qte" value="<%= @hash[k][2].to_i %>" onchange="priceUpdate(<%=k%>,this); return false;">
+                          	
+                          </div>
+                        </td>
+                        <td width="20%">
+                          <div class='text-right'>
+                          	<div class="input-group">
+                                
+                                <input class="form-control input-sm text-right" placeholder="PUHT"
+                                value="<%= @hash[k][3].to_i %>" id="puht_<%=k%>" onchange="priceUpdate(<%=k%>,this);return false;">
+                                <span class="input-group-addon">
+                                  E
+                                </span>
+                              </div>
+                          </div>
+                        </td>
+                        <td width="15%">
+                          <div class='text-right' >
+                          	<b class="montant" id="montant_<%=k%>"><%= @hash[k][2].to_i*@hash[k][3].to_i %></b> <b> e</b>
+                          </div>
+                        </td>
+                      </tr>
+                    </div>
+
+                <% end %>
+                <div id='new_line'></div>
+              </tbody>
+
+            </table>
+           
+                  <div id='new_line'></div>
+                
+				<div class='text-left'>
+				 <a href'#' onclick="addLine()">Ajouter ligne</a>
+			</div>
+            <div class='text-right'>
+              <h3 class='subtotal contrast' >
+              	<b id="amount_total"><%= @total %></b><b> e</b>
+              </h3>
+            </div>
+            <hr class='hr-normal'>
+            <div>
+              <span>
+                <div class='text-right'>
+                  
+                  <%= link_to 'Supprimer devis', @quote, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %>
+                  <a class='btn btn-success' onclick="quoteUpdate(<%= @quote.id %>); return false;">Sauve et retour</a>
+                </div>
+              </span>                  
+              
+            </div>
+            <hr class='hr-normal'>
+            <div class='row'>
+              <div class='col-sm-4'>
+                <div class='lead'>
+                  <i class='icon-user contrast'></i>
+                  Contact client
+                </div>
+                <address>
+                  <strong><div id='full_name'><%=@client.first_name%> <%=@client.last_name%></div></strong>
+                  <a href='mailto:<%=@client.email%>' id='email'><%=@client.email%></a>
+                  <div id='phone'><%=@client.phone%></div>
+                </address>
+              </div>
+              <div class='col-sm-4'>
+                <div class='lead'>
+                  <i class='icon-envelope contrast'></i>
+                  Addresse client
+                </div>
+                <address>
+                  <strong><div id='full_name'><%=@client.first_name%> <%=@client.last_name%></div></strong>
+                  <div id='address'><%=@client.address%></div>
+                  <div id='city'><%=@client.city%></div>
+                </address>
+              </div>
+              <div class='col-sm-4'>
+                  <div class='text-right'>
+                    <!-- <a class='btn' href='#'>Modifier client</a> -->
+<!--                     <a class='btn btn-success' href='/modify_client' onclick="changeClient()">Modifier client </a> -->
+                   <!--  <div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->
+                    <p>
+                    <a class='btn btn-success' href='#'>Envoyer devis</a>
+                    </p>
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div> 
+
+<script>
+$(document).ready(function() {
+idclient="<%=Client.find_by_id(@quote.client_id) %>";
+$("#nav_quote").attr('class', 'active');
+
+});
+
+var idclient;
+
+function addLine() {
+    var indexq=0;
+$(document.getElementsByClassName('index')).each(function(idx, el) {
+  indexq=Math.max(indexq, parseInt(el.id))+1;
+});
+
+		var table = document.getElementById("table_quote");
+		var row = table.insertRow(-1);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		cell1.innerHTML = '<div class="text-center"><a href="" onclick="deleteLine(this); return false;" class="index" id="'+indexq+'"><i class="icon-trash"></i></a></div>';
+		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
+		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
+		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
+		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">E</span></div></div>';
+		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> e</b></div>';
+
+}
+
+function deleteLine(item){
+	$(item).closest('tr').remove();  
+}
+
+function changeClient(){
+event.preventDefault();
+var url = "/modify_client";
+$.ajax({
+  url: url,
+  success: function(data) {  $( "#dialog" ).dialog();
+    // $('#modify_client').replaceWith(data['form']);
+    // $('#modify_client').dialog({
+    //   title: 'New Event',
+    //   modal: true,
+    //   width: 500,
+    //   close: function(event, ui) { $('#modify_client').dialog('destroy') }
+    // });
+  }
+});
+
+}
+
+
+function priceUpdate(num,item){
+var amount_id="montant_"+num;
+var qte_id="qte_"+num;
+var puht_id="puht_"+num;
+if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
+    var amount=(parseInt(document.getElementById(qte_id).value)
+		*parseInt(document.getElementById(puht_id).value)).toString();
+    document.getElementById(amount_id).innerHTML=amount;
+}
+var i=0;
+var total=0; 
+
+var l2=document.getElementsByClassName('montant');  
+$(l2).each(function(idx, el) {
+  if (document.getElementById(el.id).innerHTML!=''&& !isNaN(document.getElementById(el.id).innerHTML)){
+    total=total+parseInt(document.getElementById(el.id).innerHTML);
+  }
+});
+document.getElementById("amount_total").innerHTML=total.toString();
+}
+
+function quoteUpdate(id){
+  event.preventDefault();
+  var url_up="/quotes/"+id
+  var title=document.getElementById("qtitle").value;
+  var total=parseInt(document.getElementById("amount_total").innerHTML);
+  var list=[];
+ 
+  $(document.getElementsByClassName('index')).each(function(idx, el) { 
+    var id=el.id;
+    var description_id="description_"+id;
+    var unit_id="unit_"+id;
+    var qte_id="qte_"+id;
+    var puht_id="puht_"+id;
+    if (document.getElementById(description_id)==null){
+      desc="";
+    }
+    else{
+      desc=document.getElementById(description_id).value;
+    }
+    if (document.getElementById(unit_id)==null){
+      uni="";
+    }
+    else{
+      uni=document.getElementById(unit_id).value;
+    }
+    if (document.getElementById(qte_id)==null){
+      qte="";
+    }
+    else{
+      qte=document.getElementById(qte_id).value;
+    }
+    if (document.getElementById(puht_id)==null){
+      puht="";
+    }
+    else{
+      puht=document.getElementById(puht_id).value;
+    }
+    var sublist=[desc,uni,qte,puht];
+    list.push(sublist);
+  });
+
+        var request=$.ajax({
+        url: url_up,
+        type: "PUT",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {q_update: {
+                 title: title, 
+                 total: total,
+                 list: list,
+                 client: idclient}}
+        });
+
+    request.done(doAjaxCall());
+}
+
+
+function doAjaxCall() {
+ window.location.replace("/quotes")
+
+}
+
+</script>
+
+<!-- <div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div> -->
+
+
+

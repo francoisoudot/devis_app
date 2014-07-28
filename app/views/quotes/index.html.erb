@@ -1,0 +1,75 @@
+
+<div id='orders'>
+  <div class='row'>
+    <div class='col-sm-12'>
+      <div class='page-header'>
+        <h1 class='pull-left'>
+          <i class='icon-inbox'></i>
+          <span>Devis</span>
+        </h1>
+      </div>
+      <div class='row'>
+        <div class='col-sm-12'>
+          <a class="btn btn-success btn-block btn-lg" type="button" href="/quotes/new">Nouvau devis</a>
+          <p></p>
+          <div class='box'>
+            <div class='box-content'> 
+              <% @quotes.each do |quote| %>
+                <tr>
+                  <div class='col-sm-9'>
+                      <div class='pull-left'>
+                        <p>
+                          <%= link_to(quote) do %>
+                            <strong>#<%= quote.id %></strong>  <%= quote.title %>
+
+                          <% end %>
+                        </p>
+                        <p>
+                          <% @client=Client.find_by_id(quote.client_id) %>
+
+                            <%= link_to(clients_path) do %>
+                              <%=@client.first_name%> <%=@client.last_name %>                                            
+
+                            <% end %>
+                        </p>  
+                      </div>
+                      <div class='text-right pull-right'>
+                        <h4 class='contrast price'><%= quote.total %>Euros</h4>
+                        <p>
+                          <span class='timeago fade has-tooltip' data-placement='top' title='2013-04-13'><%= quote.starttime %></span>
+                          <i class='icon-time'></i>
+                        </p>
+                      </div>
+                  </div>
+                  <div class='col-sm-3'>
+                   <div class='text-right pull-right'>
+                    <%= link_to 'Relancer', edit_quote_path(quote) %>
+                      |  
+                    <%= link_to 'Supprimer', quote, method: :delete, data: { confirm: 'Are you sure?' } %>
+                    
+                   </div> 
+                  </div>      
+                  <div class='clearfix'></div>
+                  <hr class='hr-normal'>
+                </tr>
+              <% end %>
+              <div class='clearfix'></div>
+              <hr class='hr-normal'>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+
+  <script type="text/javascript">
+  $( document ).ready(function() {
+    $("#nav_quote").toggleClass( 'active');
+});
+
+  </script>
+
+
+<br>

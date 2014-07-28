@@ -1,0 +1,342 @@
+
+<div id="notice"><%= notice %></div> 
+
+
+<div id='orders'>
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <h1 class='pull-left'>
+        <i class='icon-inbox'></i>
+        <span>Nouveau devis </span> - <input class="input-lg" id="qtitle" value="" placeholder="Titre">
+      </h1>
+    </div>
+	  <div class='col-sm-12'>
+    <div class='row' id='detail'>
+      <div class='col-sm-12'>
+        <div class='box'>
+          <div class='box-content'>
+	          <div class='row' >
+	          	<div class='col-sm-6'>
+			          <div class='clearfix' id='slider'>
+				          <div class='slider-content'>
+				            <ul class='list-unstyled'>
+				              <% @alpha.each do |car| %>
+				                <% if @clients.where(ln_fl: car)!=[] %>
+				                  <li id="<%=car%>">
+				                    <a class='title' name="<%=car%>"><%=car.upcase%></a>
+				                    <ul class='list-unstyled'>
+				                      <% @clients.where(ln_fl: car).sort_by{ |m| m.last_name.downcase}.each do |client| %>
+				                        <li>
+				                          <a href='#' onclick="clientShow(<%= client.id %>);return false;"> <%= client.last_name %> <%= client.first_name %></a>
+				                        </li>
+				                      <% end %>
+				                    </ul>
+				                  </li>
+				                <% end %>
+				              <% end %>
+				            </ul>
+				          </div>
+			          </div>
+			        </div>
+						  <div class='col-sm-6'>
+				        <div class='pull-right'>
+                  <%= link_to 'Nouveau Client', new_client_path %>
+				        </div>
+				        <div class='lead'>
+				          <i class='icon-user contrast'></i>
+				          Contact client
+				        </div>
+				        <address>
+				          <strong><div id='full_name'></div></strong>
+				          <a href='mailto:#' id='email'></a>
+				        </address>
+				        <div class='lead'>
+				          <i class='icon-envelope contrast'></i>
+				          Addresse client
+				        </div>
+				        <address>
+				          <strong><div id='full_name'></div></strong>
+				          <div id='address'></div>
+				          <div id='city'></div>
+				          <div id='phone'></div>
+				        </address>
+						      </div>
+						    </div>
+						    <div class='col-sm-6'>
+						      <div class='clearfix'></div>
+						      <hr class='hr-normal'>
+						    </div>
+						  </div>
+						</div>
+
+
+
+           
+            <hr class='hr-normal'>
+
+            
+            <div class='clearfix'></div>
+            <table class='table table-bordered table-hover table-striped' id='table_quote'>
+              <thead>
+                <tr>
+                  <th width="5%">
+                  </th>
+                  <th width="45%">Désignation</th>
+                  <th width="10%">
+                    <div class='text-center'>Unité</div>
+                  </th>
+                  <th width="5%">
+                    <div class='text-center'>Quantité</div>
+                  </th>
+                  <th width="20%">
+                    <div class='text-center'>Prix unitaire</div>
+                  </th>
+                  <th width="15%">
+                    <div class='text-right'>Montant</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                 <div>
+                      <tr>
+                        <td width="5%">
+                            <div class='text-center'> 
+                              <a href="" onclick="deleteLine(this); return false;" class="index" id="0"><i class="icon-trash"></i></a>
+                             </div>
+                        </td>
+                        <td width="45%"> 
+                        	<input class="form-control input-sm" id="description_0" placeholder="Description" value="">
+                        </td>
+                        <td width="10%">
+							<select class="form-control input-sm" data-rule-required="true" id="unit_0" name="validation_select">
+                              <option "selected"></option>
+                              <option >ml</option>
+                              <option >m2</option>
+                              <option >u</option>
+                            </select>
+                        </td>
+                        <td width="5%">
+                          <div class='text-center'> 
+                          	<input class="form-control input-sm" id="qte_0" placeholder="Qte" value="" onchange="priceUpdate(0,this); return false;">
+                          	
+                          </div>
+                        </td>
+                        <td width="20%">
+                          <div class='text-right'>
+                          	<div class="input-group">
+                                
+                                <input class="form-control input-sm text-right" placeholder="PUHT"
+                                value="" id="puht_0" onchange='priceUpdate("0",this);'>
+                                <span class="input-group-addon">
+                                  E
+                                </span>
+                              </div>
+                          </div>
+                        </td>
+                        <td width="15%">
+                          <div class='text-right' >
+                          	<b class="montant" id="montant_0"></b> <b> e</b>
+                          </div>
+                        </td>
+                      </tr>
+                    </div>
+                <div id='new_line'></div>
+              </tbody>
+            </table>
+            <div id='new_line'></div>
+                
+			<div class='text-left'>
+				 <a href'#' onclick="addLine()">Ajouter ligne</a>
+			</div>
+            <div class='text-right'>
+              <h3 class='subtotal contrast' >
+              	<b id="amount_total"><%= @total %></b><b> e</b>
+              </h3>
+            </div>
+            <hr class='hr-normal'>
+            <div>
+              <span>
+                <div class='text-right'>
+                  <a class='btn btn-success' onclick="quoteCreate(); return false;">Sauve et retour</a>
+                </div>
+              </span>                  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div> 
+
+<script>
+  $( document ).ready(function() {
+    $("#nav_quote").toggleClass('active');
+});
+
+var idclient;
+
+
+function clientShow(id){
+	idclient=id;
+  $( "#full_name" ).empty();
+  $( "#email" ).empty();
+  $("#email").attr("href", "#");
+  $( "#address" ).empty();
+  $( "#city" ).empty();
+  $( "#phone" ).empty();
+  $("#editClient").attr("href", "#");
+  $( "#editClient" ).empty();
+  $("#deleteClient").attr("href", "#");
+  $( "#deleteClient" ).empty();
+
+  var url_client_up="/clients/"+id+"/edit";
+  var url_up="/clients/"+id+".json";
+  var url_del="/clients/"+id;
+
+  var request=$.get( url_up, function( data ) {
+  $( "#full_name" ).append( "" + capitaliseFirstLetter(data.client.last_name) + " " + capitaliseFirstLetter(data.client.first_name) );
+  $( "#email" ).append( "" + data.client.email );
+  $( "#email" ).attr("href", "mailto:"+data.client.email );
+  $( "#address" ).append( "" + data.client.address );
+  $( "#city" ).append( "" + data.client.city );
+  $( "#phone" ).append( "" + data.client.phone );
+  $("#editClient").attr("href", url_client_up);
+  $( "#editClient" ).append( "Editer client" );
+  $("#deleteClient").attr("href", url_del);
+  $( "#deleteClient" ).append( "Supprimer client" );
+
+}, "json" );
+
+}
+
+
+function capitaliseFirstLetter(string)
+{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+function addLine() {
+    var indexq=0;
+$(document.getElementsByClassName('index')).each(function(idx, el) {
+  indexq=Math.max(indexq, parseInt(el.id))+1;
+});
+
+		var table = document.getElementById("table_quote");
+		var row = table.insertRow(-1);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		cell1.innerHTML = '<div class="text-center"><a href="" onclick="deleteLine(this); return false;" class="index" id="'+indexq+'"><i class="icon-trash"></i></a></div>';
+		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
+		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
+		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
+		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">E</span></div></div>';
+		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> e</b></div>';
+
+}
+
+function deleteLine(item){
+	$(item).closest('tr').remove();  
+}
+
+
+function priceUpdate(num,item){
+var amount_id="montant_"+num;
+var qte_id="qte_"+num;
+var puht_id="puht_"+num;
+if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
+    var amount=(parseInt(document.getElementById(qte_id).value)
+		*parseInt(document.getElementById(puht_id).value)).toString();
+    document.getElementById(amount_id).innerHTML=amount;
+}
+var i=0;
+var total=0; 
+
+var l2=document.getElementsByClassName('montant');  
+$(l2).each(function(idx, el) {
+  if (document.getElementById(el.id).innerHTML!=''&& !isNaN(document.getElementById(el.id).innerHTML)){
+    total=total+parseInt(document.getElementById(el.id).innerHTML);
+  }
+});
+document.getElementById("amount_total").innerHTML=total.toString();
+}
+
+function quoteCreate(){
+	if (idclient==undefined || idclient==null) {
+            alert('Merci de choisir un client');
+            return false;
+  }
+  event.preventDefault();
+  var url_up="/quotes"
+  var title=document.getElementById("qtitle").value;
+  var total=parseInt(document.getElementById("amount_total").innerHTML);
+  var list=[];
+ 
+  $(document.getElementsByClassName('index')).each(function(idx, el) { 
+    var id=el.id;
+    var description_id="description_"+id;
+    var unit_id="unit_"+id;
+    var qte_id="qte_"+id;
+    var puht_id="puht_"+id;
+    if (document.getElementById(description_id)==null){
+      desc="";
+    }
+    else{
+      desc=document.getElementById(description_id).value;
+    }
+    if (document.getElementById(unit_id)==null){
+      uni="";
+    }
+    else{
+      uni=document.getElementById(unit_id).value;
+    }
+    if (document.getElementById(qte_id)==null){
+      qte="";
+    }
+    else{
+      qte=document.getElementById(qte_id).value;
+    }
+    if (document.getElementById(puht_id)==null){
+      puht="";
+    }
+    else{
+      puht=document.getElementById(puht_id).value;
+    }
+    var sublist=[desc,uni,qte,puht];
+    list.push(sublist);
+  });
+
+
+        var request=$.ajax({
+        url: url_up,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {q_create: {
+                 title: title, 
+                 total: total,
+                 list: list,
+                 client: idclient 
+               }}
+        });
+
+    request.done(doAjaxCall());
+}
+
+
+function doAjaxCall() {
+ window.location.replace("/quotes")
+
+}
+
+</script>
+
+
+
+
+
