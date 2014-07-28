@@ -12,7 +12,7 @@ gem 'rails', '4.1.0.beta2'
 gem 'sqlite3',        group: :development
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.0.rc1'
+gem 'sass-rails', '~> 4.0.3'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
