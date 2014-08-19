@@ -59,6 +59,9 @@ class QuotesController < ApplicationController
     # end
   end
 
+
+
+
   # PATCH/PUT /quotes/1
   # PATCH/PUT /quotes/1.json
   def update
@@ -83,17 +86,6 @@ class QuotesController < ApplicationController
   #   end
   # end
   end
-
-
-    # respond_to do |format|
-    #   if @quote.update(quote_params)
-    #     format.html { redirect_to @quote, notice: 'Quote was successfully updated.' }
-    #     format.json { head :no_content }
-    #   else
-    #     format.html { render action: 'edit' }
-    #     format.json { render json: @quote.errors, status: :unprocessable_entity }
-    #   end
-    # end
 
   # DELETE /quotes/1
   # DELETE /quotes/1.json

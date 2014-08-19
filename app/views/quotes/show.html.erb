@@ -69,7 +69,7 @@
                         </td>
                         <td width="5%">
                           <div class='text-center'> 
-                          	<input class="form-control input-sm" id="qte_<%=k%>" placeholder="Qte" value="<%= @hash[k][2].to_i %>" onchange="priceUpdate(<%=k%>,this); return false;">
+                          	<input class="form-control input-sm" id="qte_<%=k%>" placeholder="Qte" value="<%= @hash[k][2].to_d %>" onchange="priceUpdate(<%=k%>,this); return false;">
                           	
                           </div>
                         </td>
@@ -78,16 +78,17 @@
                           	<div class="input-group">
                                 
                                 <input class="form-control input-sm text-right" placeholder="PUHT"
-                                value="<%= @hash[k][3].to_i %>" id="puht_<%=k%>" onchange="priceUpdate(<%=k%>,this);return false;">
+                                value="<%= @hash[k][3].to_d %>" id="puht_<%=k%>" onchange="priceUpdate(<%=k%>,this);return false;">
                                 <span class="input-group-addon">
-                                  E
+                                 €
                                 </span>
                               </div>
                           </div>
                         </td>
                         <td width="15%">
                           <div class='text-right' >
-                          	<b class="montant" id="montant_<%=k%>"><%= @hash[k][2].to_i*@hash[k][3].to_i %></b> <b> e</b>
+                          	<b class="montant" id="montant_<%=k%>">
+                              <%= @hash[k][2].to_d*@hash[k][3].to_d %></b><b> €</b>
                           </div>
                         </td>
                       </tr>
@@ -106,23 +107,12 @@
 			</div>
             <div class='text-right'>
               <h3 class='subtotal contrast' >
-              	<b id="amount_total"><%= @total %></b><b> e</b>
+              	<b id="amount_total"><%= @total.to_d %></b><b> €</b>
               </h3>
             </div>
             <hr class='hr-normal'>
-            <div>
-              <span>
-                <div class='text-right'>
-                  
-                  <%= link_to 'Supprimer devis', @quote, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %>
-                  <a class='btn btn-success' onclick="quoteUpdate(<%= @quote.id %>); return false;">Sauve et retour</a>
-                </div>
-              </span>                  
-              
-            </div>
-            <hr class='hr-normal'>
             <div class='row'>
-              <div class='col-sm-4'>
+              <div class='col-sm-6'>
                 <div class='lead'>
                   <i class='icon-user contrast'></i>
                   Contact client
@@ -133,7 +123,7 @@
                   <div id='phone'><%=@client.phone%></div>
                 </address>
               </div>
-              <div class='col-sm-4'>
+              <div class='col-sm-6x'>
                 <div class='lead'>
                   <i class='icon-envelope contrast'></i>
                   Addresse client
@@ -143,18 +133,29 @@
                   <div id='address'><%=@client.address%></div>
                   <div id='city'><%=@client.city%></div>
                 </address>
-              </div>
-              <div class='col-sm-4'>
-                  <div class='text-right'>
-                    <!-- <a class='btn' href='#'>Modifier client</a> -->
-<!--                     <a class='btn btn-success' href='/modify_client' onclick="changeClient()">Modifier client </a> -->
-                   <!--  <div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div> -->
-                    <p>
-                    <a class='btn btn-success' href='#'>Envoyer devis</a>
-                    </p>
-                </div>
-              </div>              
+              </div>             
             </div>
+          </div>
+            <div class='row'>
+              <div class='col-sm-12'>
+              </div>
+ 
+              <div class='col-sm-6' class='text-left'>           
+                <div >
+                  
+                  <%= link_to 'Supprimer devis', @quote, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %>
+                  <a class='btn btn-success' onclick="quoteVisu(<%= @quote.id %>); return false;">Visualiser</a>
+                </div>
+              </div>
+              <div class='col-sm-6' >
+                <div class='text-right'>
+                  <a class='btn btn-success' onclick="quoteSaveback(<%= @quote.id %>); return false;">Sauve et retour</a>
+                  <a class='btn btn-success' href='#'>Envoyer devis</a>
+                </div>
+              </div>  
+              
+            
+          </div>
           </div>
         </div>
       </div>
@@ -190,8 +191,8 @@ $(document.getElementsByClassName('index')).each(function(idx, el) {
 		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
 		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
 		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
-		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">E</span></div></div>';
-		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> e</b></div>';
+		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">€</span></div></div>';
+		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> €</b></div>';
 
 }
 
@@ -223,27 +224,30 @@ var amount_id="montant_"+num;
 var qte_id="qte_"+num;
 var puht_id="puht_"+num;
 if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
-    var amount=(parseInt(document.getElementById(qte_id).value)
-		*parseInt(document.getElementById(puht_id).value)).toString();
+    var amount=(parseFloat(document.getElementById(qte_id).value.replace(",", "."))
+		*parseFloat(document.getElementById(puht_id).value.replace(",", "."))).toFixed(2).toString();
     document.getElementById(amount_id).innerHTML=amount;
 }
 var i=0;
-var total=0; 
+var total=0.0; 
 
 var l2=document.getElementsByClassName('montant');  
 $(l2).each(function(idx, el) {
-  if (document.getElementById(el.id).innerHTML!=''&& !isNaN(document.getElementById(el.id).innerHTML)){
-    total=total+parseInt(document.getElementById(el.id).innerHTML);
+  if (document.getElementById(el.id).innerHTML!='' && !isNaN(document.getElementById(el.id).innerHTML)){
+    total=(parseFloat(total)+parseFloat(document.getElementById(el.id).innerHTML)).toFixed(2);
   }
 });
 document.getElementById("amount_total").innerHTML=total.toString();
 }
 
-function quoteUpdate(id){
+
+
+
+function quoteUpdate(id,num_function){
   event.preventDefault();
   var url_up="/quotes/"+id
   var title=document.getElementById("qtitle").value;
-  var total=parseInt(document.getElementById("amount_total").innerHTML);
+  var total=parseFloat(document.getElementById("amount_total").innerHTML).toFixed(2);
   var list=[];
  
   $(document.getElementsByClassName('index')).each(function(idx, el) { 
@@ -268,13 +272,13 @@ function quoteUpdate(id){
       qte="";
     }
     else{
-      qte=document.getElementById(qte_id).value;
+      qte=document.getElementById(qte_id).value.replace(",", ".");
     }
     if (document.getElementById(puht_id)==null){
       puht="";
     }
     else{
-      puht=document.getElementById(puht_id).value;
+      puht=document.getElementById(puht_id).value.replace(",", ".");
     }
     var sublist=[desc,uni,qte,puht];
     list.push(sublist);
@@ -291,13 +295,34 @@ function quoteUpdate(id){
                  client: idclient}}
         });
 
-    request.done(doAjaxCall());
+if (num_function==0){request.done(goBack());}
+if (num_function==1){request.done(goVisu(id));}
+    
 }
 
 
-function doAjaxCall() {
- window.location.replace("/quotes")
+function goBack() {
+ window.location.replace("/quotes");
+}
+function goVisu(id) {
+ var url="/visu_pdf/quote_visu."+id
+window.open(
+  url,
+  '_blank'
+);
+}
 
+
+function quoteSaveback(id){
+quoteUpdate(id,0);
+}
+
+function quoteVisu(id){
+quoteUpdate(id,1);
+}
+
+function is_float(mixed_var) {
+  return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
 }
 
 </script>

@@ -4,7 +4,7 @@ Rails.application.routes.draw do
 
   resources :devis
   get '/modify_client' => 'application#modify_client'
-
+  get '/visu_pdf/quote_visu' => 'visu_pdf#quote_visu'
   root 'quotes#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

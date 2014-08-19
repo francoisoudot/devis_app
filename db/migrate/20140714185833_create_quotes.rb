@@ -4,7 +4,7 @@ class CreateQuotes < ActiveRecord::Migration
       t.string :title
       t.text :list
       # list = line in quote = [[designation,unit,qte,puht],[]]
-      t.integer :total
+      t.decimal :total
       t.datetime :starttime, :endtime
       t.references :client, index: true
       t.timestamps

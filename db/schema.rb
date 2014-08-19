@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20140714185833) do
   create_table "quotes", force: true do |t|
     t.string   "title"
     t.text     "list"
-    t.integer  "total"
+    t.decimal  "total"
     t.datetime "starttime"
     t.datetime "endtime"
     t.integer  "client_id"

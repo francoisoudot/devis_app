@@ -136,7 +136,7 @@
                         </td>
                         <td width="15%">
                           <div class='text-right' >
-                          	<b class="montant" id="montant_0"></b> <b> e</b>
+                          	<b class="montant" id="montant_0"></b> <b> €</b>
                           </div>
                         </td>
                       </tr>
@@ -151,7 +151,7 @@
 			</div>
             <div class='text-right'>
               <h3 class='subtotal contrast' >
-              	<b id="amount_total"><%= @total %></b><b> e</b>
+              	<b id="amount_total"><%= @total %></b><b> €</b>
               </h3>
             </div>
             <hr class='hr-normal'>
@@ -236,8 +236,8 @@ $(document.getElementsByClassName('index')).each(function(idx, el) {
 		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
 		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
 		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
-		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">E</span></div></div>';
-		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> e</b></div>';
+		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">€</span></div></div>';
+		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> €</b></div>';
 
 }
 
@@ -251,8 +251,8 @@ var amount_id="montant_"+num;
 var qte_id="qte_"+num;
 var puht_id="puht_"+num;
 if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
-    var amount=(parseInt(document.getElementById(qte_id).value)
-		*parseInt(document.getElementById(puht_id).value)).toString();
+    var amount=(parseFloat(document.getElementById(qte_id).value.replace(",", "."))
+		*parseFloat(document.getElementById(puht_id).value.replace(",", "."))).toFixed(2).toString();
     document.getElementById(amount_id).innerHTML=amount;
 }
 var i=0;
@@ -261,7 +261,7 @@ var total=0;
 var l2=document.getElementsByClassName('montant');  
 $(l2).each(function(idx, el) {
   if (document.getElementById(el.id).innerHTML!=''&& !isNaN(document.getElementById(el.id).innerHTML)){
-    total=total+parseInt(document.getElementById(el.id).innerHTML);
+    total=(parseFloat(total)+parseFloat(document.getElementById(el.id).innerHTML)).toFixed(2);
   }
 });
 document.getElementById("amount_total").innerHTML=total.toString();
@@ -300,13 +300,13 @@ function quoteCreate(){
       qte="";
     }
     else{
-      qte=document.getElementById(qte_id).value;
+      qte=document.getElementById(qte_id).value.replace(",", ".");
     }
     if (document.getElementById(puht_id)==null){
       puht="";
     }
     else{
-      puht=document.getElementById(puht_id).value;
+      puht=document.getElementById(puht_id).value.replace(",", ".");
     }
     var sublist=[desc,uni,qte,puht];
     list.push(sublist);

@@ -1,0 +1,2 @@
+module VisuPdfHelper
+end
