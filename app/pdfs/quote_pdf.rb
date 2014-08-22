@@ -5,6 +5,11 @@ class QuotePdf < Prawn::Document
     super()
     @quote = quote
     @view = view
+    if @quote.total==nil
+      @total=0
+    else
+      @total= @quote.total
+    end
     @tax_rate=@quote.tax_rate.to_d
     @client=Client.find_by_id(@quote.client_id)
     hash=Hash.new
@@ -75,9 +80,9 @@ class QuotePdf < Prawn::Document
   end
 
   def quote_total_data
-    [["Total hors taxes", number_to_euro(@quote.total.to_d)],
-    ["TVA = #{(@tax_rate*100).to_s}%",number_to_euro(@quote.total.to_d*@tax_rate)],
-    ["Total toutes taxes comprises",number_to_euro(@quote.total.to_d*(1+@tax_rate)) ]]
+    [["Total hors taxes", number_to_euro(@total.to_d)],
+    ["TVA = #{(@tax_rate*100).to_s}%",number_to_euro(@total.to_d*@tax_rate)],
+    ["Total toutes taxes comprises",number_to_euro(@total.to_d*(1+@tax_rate))]]
 
   end
 

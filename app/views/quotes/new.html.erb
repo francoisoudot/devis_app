@@ -417,16 +417,6 @@ function quoteCreate(num_function){
     list.push(sublist);
   });
 
-var quote_id;
-// var q_param;
-//  q_param={
-//      title: title, 
-//      total: total,
-//      list: list,
-//      client: idclient,
-//      tax_rate: tax_rate
-//    };
-
         var request=$.ajax({
         url: url_up,
         type: "POST",
@@ -439,18 +429,12 @@ var quote_id;
                  tax_rate: tax_rate 
                }},
         success: function(data, textStatus, jqXHR) {
-                  quote_id=data;
+                  if (num_function==0){request.done(goBack());}
+                  if (num_function==1){request.done(goShow(data.quote_id));}
                   return false;
                 },
         dataType: "json"
         });
-
-
-// var request = $.post( url_up,{q_param}, function( data ) { 
-//   console.log( data);}, "json");
-if (num_function==0){request.done(goBack());}
-if (num_function==1){request.done(goShow(quote_id));}
-quote_id;
     
 }
 
@@ -460,14 +444,14 @@ function goBack() {
 }
 
 function goShow(quote_id) {
-var url;
-url="/quote/"+quote_id;
-  window.location.replace(url);
-//  var url="/visu_pdf/quote_visu."+id
-// window.open(
-//   url,
-//   '_blank'
-// );
+var url_show;
+url_show="/quotes/"+quote_id;
+var url_visu="/visu_pdf/quote_visu."+quote_id
+window.open(
+url_visu,
+'_blank'
+);
+window.location.replace(url_show);
 }
 
 

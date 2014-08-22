@@ -6,7 +6,7 @@
   <body>
     <h1>Bonjour <%= @client.first_name.capitalize %>,</h1>
     <p>
-      Veuillez trouver le devis # <%=@quote.id%> pour <%=@quote.title%> d'un montant total t.t.c de <%= @quote.total.to_d*(1+@quote.tax_rate.to_d) %> euros.   <br>
+      Veuillez trouver le devis # <%=@quote.id%> pour <%=@quote.title%> d'un montant total t.t.c de <%= @quote.total.to_d*(1+@quote.tax_rate.to_d) if @quote.total!=nil %> euros.   <br>
     </p>
     <p>
       Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question. 

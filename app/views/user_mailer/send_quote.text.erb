@@ -1,5 +1,5 @@
 Bonjour <%= @client.first_name.capitalize %>,
-      Veuillez trouver le devis # <%=@quote.id%> pour <%=@quote.title%> d'un montant total t.t.c de <%= @quote.total.to_d*(1+@quote.tax_rate.to_d) %> euros.
+      Veuillez trouver le devis # <%=@quote.id%> pour <%=@quote.title%> d'un montant total t.t.c de <%= @quote.total.to_d*(1+@quote.tax_rate.to_d) if @quote.total!=nil %> euros.
 
       Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question. 
       Cordialement,    
