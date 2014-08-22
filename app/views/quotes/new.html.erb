@@ -75,7 +75,9 @@
            
             <hr class='hr-normal'>
 
-            
+      <div class="box-content box-no-padding">
+        <div class="responsive-table">
+          <div class="scrollable-area">
             <div class='clearfix'></div>
             <table class='table table-bordered table-hover table-striped' id='table_quote'>
               <thead>
@@ -145,20 +147,80 @@
               </tbody>
             </table>
             <div id='new_line'></div>
-                
-			<div class='text-left'>
-				 <a href'#' onclick="addLine()">Ajouter ligne</a>
-			</div>
-            <div class='text-right'>
-              <h3 class='subtotal contrast' >
-              	<b id="amount_total"><%= @total %></b><b> €</b>
-              </h3>
             </div>
+          </div>
+        </div>
+                
+           <div class='row'>
+            <div class='col-sm-6'>    
+                <div class='text-left'>
+                 <a href'#' onclick="addLine()">Ajouter ligne</a>
+                </div>
+            </div>
+            <div class='col-sm-6'> 
+              <div class='row'> 
+                <div class='col-sm-6'>   
+                  <div class='text-left'>
+                    <h4 class='subtotal contrast' > 
+                      Total hors taxes
+                    </h4>
+                  </div>
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="amount_total"></b><b> €</b>
+                        
+                      </h4>
+                    </div>
+                </div>
+              </div>
+              <div class='row'>
+                <div class='col-sm-1 text-left'>   
+                      <h4 class='subtotal contrast' >TVA </h4> 
+                </div>
+                <div class='col-sm-3'>   
+                          <select class="form-control default" id="tax_rate" onchange="tax_rateUpdate(this);return false;">
+                                            <option "selected"></option>
+                                            <option>7%</option>
+                                            <option>20%</option>
+                          </select>            
+                </div>
+                <div class='col-sm-2 text-left'>   
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="tax_amount"></b><b> €</b>
+                      </h4>
+                    </div>
+                </div>
+              </div>
+              <div class='row'> 
+                <div class='col-sm-6'>   
+                  <div class='text-left'>
+                    <h4 class='subtotal contrast' > 
+                      Total toutes taxes
+                    </h4>
+                  </div>
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="amount_total_ttc"></b><b> €</b>
+                        
+                      </h4>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
             <hr class='hr-normal'>
             <div>
               <span>
                 <div class='text-right'>
-                  <a class='btn btn-success' onclick="quoteCreate(); return false;">Sauve et retour</a>
+                  <a class='btn btn-success' onclick="quoteVisu(); return false;">Visualiser</a>
+                  <a class='btn btn-success' onclick="quoteSaveback(); return false;">Sauve et retour</a>
                 </div>
               </span>                  
             </div>
@@ -200,7 +262,7 @@ function clientShow(id){
   $( "#email" ).append( "" + data.client.email );
   $( "#email" ).attr("href", "mailto:"+data.client.email );
   $( "#address" ).append( "" + data.client.address );
-  $( "#city" ).append( "" + data.client.city );
+  $( "#city" ).append( "" +data.client.postal_code + " " + capitaliseFirstLetter(data.client.city) );
   $( "#phone" ).append( "" + data.client.phone );
   $("#editClient").attr("href", url_client_up);
   $( "#editClient" ).append( "Editer client" );
@@ -267,7 +329,34 @@ $(l2).each(function(idx, el) {
 document.getElementById("amount_total").innerHTML=total.toString();
 }
 
-function quoteCreate(){
+function tax_rateUpdate(item){
+  var tax_rate;
+  var amount_total;
+  if (document.getElementById("tax_rate")==null){
+      tax_rate="";
+    }
+    else{
+      tax_rate=document.getElementById("tax_rate").value;
+      if (tax_rate=="20%"){
+        tax_rate=0.2;
+      }
+      if (tax_rate=="7%"){
+        tax_rate=0.07;
+      }
+      if (tax_rate==""){
+        tax_rate=0;
+      }
+      else{}
+    }
+
+
+  amount_total=document.getElementById("amount_total").innerHTML;
+  document.getElementById("tax_amount").innerHTML=(parseFloat(amount_total)*parseFloat(tax_rate)).toFixed(2).toString();
+  document.getElementById("amount_total_ttc").innerHTML=(parseFloat(amount_total)*(1+parseFloat(tax_rate))).toFixed(2).toString();
+
+}
+
+function quoteCreate(num_function){
 	if (idclient==undefined || idclient==null) {
             alert('Merci de choisir un client');
             return false;
@@ -276,7 +365,23 @@ function quoteCreate(){
   var url_up="/quotes"
   var title=document.getElementById("qtitle").value;
   var total=parseInt(document.getElementById("amount_total").innerHTML);
-  var list=[];
+  var tax_rate;
+  if (document.getElementById("tax_rate")==null){
+      tax_rate=0;
+    }
+    else{
+      tax_rate=document.getElementById("tax_rate").value;
+      if (tax_rate=="20%"){
+        tax_rate=0.2;
+      }
+      if (tax_rate=="7%"){
+        tax_rate=0.07;
+      }
+      if (tax_rate==""){
+        tax_rate=0;
+      }
+      else{}
+    }  var list=[];
  
   $(document.getElementsByClassName('index')).each(function(idx, el) { 
     var id=el.id;
@@ -312,20 +417,57 @@ function quoteCreate(){
     list.push(sublist);
   });
 
+var quote_id;
+// var q_param;
+//  q_param={
+//      title: title, 
+//      total: total,
+//      list: list,
+//      client: idclient,
+//      tax_rate: tax_rate
+//    };
 
         var request=$.ajax({
         url: url_up,
         type: "POST",
         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
-        data: {q_create: {
+        data: {q_param: {
                  title: title, 
                  total: total,
                  list: list,
-                 client: idclient 
-               }}
+                 client: idclient,
+                 tax_rate: tax_rate 
+               }},
+        success: function(data, textStatus, jqXHR) {
+                  quote_id=data;
+                  return false;
+                },
+        dataType: "json"
         });
 
-    request.done(doAjaxCall());
+
+// var request = $.post( url_up,{q_param}, function( data ) { 
+//   console.log( data);}, "json");
+if (num_function==0){request.done(goBack());}
+if (num_function==1){request.done(goShow(quote_id));}
+quote_id;
+    
+}
+
+
+function goBack() {
+ window.location.replace("/quotes");
+}
+
+function goShow(quote_id) {
+var url;
+url="/quote/"+quote_id;
+  window.location.replace(url);
+//  var url="/visu_pdf/quote_visu."+id
+// window.open(
+//   url,
+//   '_blank'
+// );
 }
 
 
@@ -333,7 +475,13 @@ function doAjaxCall() {
  window.location.replace("/quotes")
 
 }
+function quoteSaveback(){
+quoteCreate(0);
+}
 
+function quoteVisu(){
+quoteCreate(1);
+}
 </script>
 
 

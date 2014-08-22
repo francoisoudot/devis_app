@@ -124,7 +124,7 @@ function clientShow(id){
   $( "#email" ).append( "" + data.client.email );
   $( "#email" ).attr("href", "mailto:"+data.client.email );
   $( "#address" ).append( "" + data.client.address );
-  $( "#city" ).append( "" + data.client.city );
+  $( "#city" ).append( "" + data.client.postal_code + " " + capitaliseFirstLetter(data.client.city) );
   $( "#phone" ).append( "" + data.client.phone );
   $("#editClient").attr("href", url_client_up);
   $( "#editClient" ).append( "Editer client" );
@@ -135,9 +135,9 @@ function clientShow(id){
       var title=a[0];
       var total=a[1];
       var id=a[2];
-      var date="tbd-format";
+      var date=a[3];
       console.log(title);
-      $("#quote_list").append('<div class="col-sm-9"><div class="pull-left"><p><a href="/quotes/'+id+'"><strong>  #'+id+' '+title+' </strong></a><p><i class="icon-time"></i><span>'+date+'</span></p></p></div><div class="text-right pull-right"><h5 class="contrast price">'+total+' Euros</h5></div></div><div class="col-sm-3"><div class="text-center"><p><a href=""> Relancer </a></p><p><a data-confirm="Are you sure?" data-method="delete" href="/quotes/'+id+'" rel="nofollow">Supprimer</a></div></div><div class="clearfix"></div><hr class="hr-normal">'
+      $("#quote_list").append('<div class="col-sm-9"><div class="pull-left"><p><a href="/quotes/'+id+'"><strong>  #'+id+' '+title+' </strong></a><p><i class="icon-time"></i><span> '+date+'</span></p></p></div><div class="text-right pull-right"><h5 class="contrast price">'+total+' €</h5></div></div><div class="col-sm-3"><div class="text-center"><p><a href=""> Relancer </a></p><p><a data-confirm="Are you sure?" data-method="delete" href="/quotes/'+id+'" rel="nofollow">Supprimer</a></div></div><div class="clearfix"></div><hr class="hr-normal">'
         );
       
 

@@ -5,6 +5,7 @@ class QuotePdf < Prawn::Document
     super()
     @quote = quote
     @view = view
+    @tax_rate=@quote.tax_rate.to_d
     @client=Client.find_by_id(@quote.client_id)
     hash=Hash.new
     i=0
@@ -28,19 +29,27 @@ class QuotePdf < Prawn::Document
   def logo
     logopath =  "#{Rails.root}/app/assets/images/meta_icons/apple-touch-icon-57x57.png"
     image logopath, :width => 50, :height => 50
-    text "Devis", 
-    :indent_paragraphs => 100, size: 22
-
-    move_down 20
-    
+    move_up 40
     text "Société Flatty - Francois Oudot 
     92 Henry st 
     94114 San Francisco",
-    :indent_paragraphs => 350
+    :indent_paragraphs => 80
+
+    move_down 20
+
+    text "#{@client.first_name.capitalize} #{@client.last_name.capitalize} 
+    #{@client.address}
+    #{@client.postal_code} #{@client.city.capitalize}",
+    :indent_paragraphs => 370
+
+    move_down 40
+
+    text "Devis", 
+    :indent_paragraphs => 40, size: 22
   end
 
   def objet
-    move_down 80
+    move_down 20
     text "Devis # #{@quote.id}",
     :indent_paragraphs => 40, :size => 13
     move_down 15
@@ -67,8 +76,8 @@ class QuotePdf < Prawn::Document
 
   def quote_total_data
     [["Total hors taxes", number_to_euro(@quote.total.to_d)],
-    ["TVA = 20%",number_to_euro(@quote.total.to_d*0.2)],
-    ["Total toutes taxes comprises",number_to_euro(@quote.total.to_d*1.2) ]]
+    ["TVA = #{(@tax_rate*100).to_s}%",number_to_euro(@quote.total.to_d*@tax_rate)],
+    ["Total toutes taxes comprises",number_to_euro(@quote.total.to_d*(1+@tax_rate)) ]]
 
   end
 

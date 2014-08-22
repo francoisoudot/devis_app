@@ -13,7 +13,7 @@ class ClientsController < ApplicationController
   def show
     @quotes=Array.new
     @client.quotes.each do |q|
-      arr=[q.title,q.total,q.id,q.created_at]
+      arr=[q.title,q.total,q.id,distance_of_time_in_words(Time.now, q.created_at)]
       @quotes<<arr
     end
     hash={:client=>@client,:quotes=>@quotes}
