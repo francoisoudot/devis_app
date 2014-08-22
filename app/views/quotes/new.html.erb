@@ -219,7 +219,7 @@
             <div>
               <span>
                 <div class='text-right'>
-                  <a class='btn btn-success' onclick="quoteVisu(); return false;">Visualiser</a>
+                  <a class='btn btn-success' onclick="quoteVisu();">Visualiser</a>
                   <a class='btn btn-success' onclick="quoteSaveback(); return false;">Sauve et retour</a>
                 </div>
               </span>                  
@@ -447,19 +447,10 @@ function goShow(quote_id) {
 var url_show;
 url_show="/quotes/"+quote_id;
 var url_visu="/visu_pdf/quote_visu."+quote_id
-window.open(
-url_visu,
-'_blank'
-);
-window.focus();
-window.location.replace(url_show);
+// window.location.replace(url_show);
+window.open(url_visu, "mywindow","location=1,status=1,scrollbars=1");
 }
 
-
-function doAjaxCall() {
- window.location.replace("/quotes")
-
-}
 function quoteSaveback(){
 quoteCreate(0);
 }
