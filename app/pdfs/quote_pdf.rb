@@ -53,7 +53,9 @@ class QuotePdf < Prawn::Document
     94114 San Francisco",
     :indent_paragraphs => 80
 
-    move_down 20
+    text "le #{Time.now.strftime("%d/%m/%Y")} , ",
+    :indent_paragraphs => 370    
+    move_down 40
 
     text "#{@client.first_name.capitalize} #{@client.last_name.capitalize} 
     #{@client.address}
@@ -70,6 +72,7 @@ class QuotePdf < Prawn::Document
     move_down 20
     text "Objet: #{@quote.title}",
     :indent_paragraphs => 40
+
   end
 
   def quote_details

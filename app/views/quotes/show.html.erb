@@ -134,7 +134,7 @@
                 </div>
                 <div class='col-sm-3'>   
                           <select class="form-control default" id="tax_rate" onchange="tax_rateUpdate(this);return false;">
-                                            <option <%= "selected" if @tax_rate.to_s=="" %>></option>
+                                            <option <%= "selected" if @tax_rate.to_s=="" %>>0%</option>
                                             <option <%= "selected" if @tax_rate.to_s=="0.07" %>>7%</option>
                                             <option <%= "selected" if @tax_rate.to_s=="0.2" %>>20%</option>
                           </select>            
@@ -300,10 +300,32 @@ function priceUpdate(num,item){
 var amount_id="montant_"+num;
 var qte_id="qte_"+num;
 var puht_id="puht_"+num;
+var tax_rate;
+if (document.getElementById("tax_rate")==null){
+    tax_rate=0;
+  }
+  else{
+    tax_rate=document.getElementById("tax_rate").value;
+    if (tax_rate=="20%"){
+      tax_rate=0.2;
+    }
+    if (tax_rate=="7%"){
+      tax_rate=0.07;
+    }
+    if (tax_rate==""){
+      tax_rate=0;
+    }
+    else{}
+  }
 if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
     var amount=(parseFloat(document.getElementById(qte_id).value.replace(",", "."))
 		*parseFloat(document.getElementById(puht_id).value.replace(",", "."))).toFixed(2).toString();
+    if (isNaN(amount)){
+      document.getElementById(amount_id).innerHTML=0;
+    }
+    else{
     document.getElementById(amount_id).innerHTML=amount;
+    }
 }
 var i=0;
 var total=0.0; 
@@ -315,6 +337,8 @@ $(l2).each(function(idx, el) {
   }
 });
 document.getElementById("amount_total").innerHTML=total.toString();
+document.getElementById("tax_amount").innerHTML=(parseFloat(total)*parseFloat(tax_rate)).toFixed(2).toString();
+document.getElementById("amount_total_ttc").innerHTML=(parseFloat(total)*(1+parseFloat(tax_rate))).toFixed(2).toString();
 }
 
 function tax_rateUpdate(item){
