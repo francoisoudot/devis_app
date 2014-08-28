@@ -9,6 +9,7 @@ class CreateClients < ActiveRecord::Migration
       t.string :postal_code
       t.string :city
       t.string :phone
+      t.string :res1, :res2, :res3
 
       t.timestamps
     end

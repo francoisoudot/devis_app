@@ -10,6 +10,7 @@ class QuotePdf < Prawn::Document
     else
       @total= @quote.total
     end
+    @comment=@quote.comment
     @tax_rate=@quote.tax_rate.to_d
     @client=Client.find_by_id(@quote.client_id)
     hash=Hash.new
@@ -24,16 +25,28 @@ class QuotePdf < Prawn::Document
         @quote_list << [hash[j][0],hash[j][2],number_to_euro(hash[j][3].to_d),
         number_to_euro(tot)]
     end
+    @lmax=@quote_list.length
     logo
     objet
     quote_details
     quote_total
     quote_cond
+    repeat :all do
+      #Create a bounding box and move it up 18 units from the bottom boundry of the page
+      bounding_box [bounds.left, bounds.bottom + 8], width: bounds.width do
+        text "Société ADRIEN BIDINOT dommiciliée au 27 RUE RENE BRUN à YERRES (91330) - RCS: 792 752 172", size: 8, align: :center
+      end
+      bounding_box([bounds.right - 30,bounds.bottom], :width => 60, :height => 20) do
+        count = page_count
+        text "Page #{count}", size: 8
+      end
+    end
+
   end
 
   def logo
-    logopath =  "#{Rails.root}/app/assets/images/meta_icons/apple-touch-icon-57x57.png"
-    image logopath, :width => 50, :height => 50
+    logopath =  "#{Rails.root}/app/assets/images/logoabidinot.PNG"
+    image logopath, :width => 75, :height => 75
     move_up 40
     text "Société Flatty - Francois Oudot 
     92 Henry st 
@@ -55,19 +68,21 @@ class QuotePdf < Prawn::Document
 
   def objet
     move_down 20
-    text "Devis # #{@quote.id}",
-    :indent_paragraphs => 40, :size => 13
-    move_down 15
     text "Objet: #{@quote.title}",
-    :indent_paragraphs => 40, :size => 13
+    :indent_paragraphs => 40
   end
 
   def quote_details
     move_down 40
-    table quote_data, :width => 540 do
-      row(0).font_style = :bold
+    table quote_data, :width => 540, :cell_style => { size: 8 }do
+      cells.borders = []
+      row(0).borders = [:bottom]
+      row(0).border_width = 2
       columns(1).align= :center
       columns(2..3).align = :right
+      style row(0), :size => 13
+      rows(1..@lmax.to_i).borders = [:bottom]
+      rows(1..@lmax.to_i).border_width = 0.05
       self.header = true
       self.column_widths = {0 => 200, 1 => 80, 2 => 130, 3 => 130}
     end
@@ -92,28 +107,32 @@ class QuotePdf < Prawn::Document
   end
 
   def quote_total
-    move_down 10
-    table quote_total_data, :position => :right, :width => 260 do
-      columns(0).font_style = :bold
+    move_down 20
+    table quote_total_data, :position => :right, :width => 300 do
+      cells.borders = []
       columns(1).align = :right
-      self.column_widths = {0 => 130, 1 => 130}
+      self.column_widths = {0 => 200, 1 => 100}
     end
   end
 
 
   def quote_cond
     move_down 50
-    text "Conditions de règlement:" ,:indent_paragraphs => 40 , style:  :bold, :size => 13
-    text "50% à la commande
-    20% au démarrage du chantier
-    Solde fin de chantier à réception de la facture" ,:indent_paragraphs => 100, :size => 13
+    if @comment !=""
+      text @comment,:indent_paragraphs => 40
+      move_down 20
+    end
+    text "Conditions de règlement:" ,:indent_paragraphs => 40 , style:  :bold, :size => 8
+    text "- 50% à la commande
+    - 20% au démarrage du chantier
+    - Solde fin de chantier à réception de la facture" ,:indent_paragraphs => 100, :size => 8
 
-    move_down 15
+    move_down 5
     text "Non compris dans notre proposition :
-         Tous travaux non clairement décrits dans notre offre,
-         Toute fourniture non clairement décrite dans notre offre,
-         Le non-respect des conditions de règlement annulera notre intervention",
-    :indent_paragraphs => 40, style:  :bold, :size => 13
+         - Tous travaux non clairement décrits dans notre offre,
+         - Toute fourniture non clairement décrite dans notre offre,
+         - Le non-respect des conditions de règlement annulera notre intervention",
+    :indent_paragraphs => 40, style:  :bold, :size => 8
   end
 
 def number_to_euro(amount)

@@ -112,10 +112,9 @@
                         </td>
                         <td width="10%">
 							<select class="form-control input-sm" data-rule-required="true" id="unit_0" name="validation_select">
-                              <option "selected"></option>
                               <option >ml</option>
                               <option >m2</option>
-                              <option >u</option>
+                              <option "selected" >u</option>
                             </select>
                         </td>
                         <td width="5%">
@@ -219,8 +218,8 @@
             <div>
               <span>
                 <div class='text-right'>
-                  <a class='btn btn-success' onclick="quoteVisu();">Visualiser</a>
-                  <a class='btn btn-success' onclick="quoteSaveback(); return false;">Sauve et retour</a>
+<!--                   <a class='btn btn-success' target="_blank" onclick="quoteVisu(); return false;">Visualiser</a> -->
+                  <a class='btn btn-success' onclick="quoteSaveback(); return false;">Sauvegarder</a>
                 </div>
               </span>                  
             </div>
@@ -238,7 +237,8 @@
 });
 
 var idclient;
-
+var data=0;
+var request;
 
 function clientShow(id){
 	idclient=id;
@@ -417,7 +417,7 @@ function quoteCreate(num_function){
     list.push(sublist);
   });
 
-        var request=$.ajax({
+        request=$.ajax({
         url: url_up,
         type: "POST",
         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
@@ -429,13 +429,15 @@ function quoteCreate(num_function){
                  tax_rate: tax_rate 
                }},
         success: function(data, textStatus, jqXHR) {
-                  if (num_function==0){request.done(goBack());}
-                  if (num_function==1){request.done(goShow(data.quote_id));}
-                  return false;
+                  // if (num_function==0){request.done(goBack());}
+                  // if (num_function==1){request.done(goShow(data.quote_id));}
+                  // return false;
+                  request.done(goShow(data.quote_id));
+                  // if (num_function==0){request.done(goBack());}
                 },
         dataType: "json"
         });
-    
+    return true;
 }
 
 
@@ -446,9 +448,17 @@ function goBack() {
 function goShow(quote_id) {
 var url_show;
 url_show="/quotes/"+quote_id;
-var url_visu="/visu_pdf/quote_visu."+quote_id
+// var url_visu="/visu_pdf/quote_visu."+quote_id
 // window.location.replace(url_show);
-window.open(url_visu, "mywindow","location=1,status=1,scrollbars=1");
+ window.location.replace(url_show);
+return true;
+}
+function setData(data){
+  data=data;
+  var url_visu="/visu_pdf/quote_visu."+data;
+  // window.location.replace(url_show);
+  window.open(url_visu, '_blank');
+  return true;
 }
 
 function quoteSaveback(){

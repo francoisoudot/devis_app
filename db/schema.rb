@@ -22,6 +22,9 @@ ActiveRecord::Schema.define(version: 20140714185833) do
     t.string   "postal_code"
     t.string   "city"
     t.string   "phone"
+    t.string   "res1"
+    t.string   "res2"
+    t.string   "res3"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -29,11 +32,16 @@ ActiveRecord::Schema.define(version: 20140714185833) do
   create_table "quotes", force: true do |t|
     t.string   "title"
     t.text     "list"
+    t.text     "comment"
     t.decimal  "total"
     t.decimal  "tax_rate"
+    t.decimal  "discount"
     t.datetime "starttime"
     t.datetime "endtime"
     t.integer  "client_id"
+    t.string   "res1"
+    t.string   "res2"
+    t.string   "res3"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

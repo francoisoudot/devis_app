@@ -62,10 +62,9 @@
 
 
       							             <select class="form-control input-sm" data-rule-required="true" id="unit_<%=k%>" name="validation_select">
-                                    <option <%= "selected" if @hash[k][1]=="" %>></option>
                                     <option <%= "selected" if @hash[k][1]=="ml" %>>ml</option>
                                     <option <%= "selected" if @hash[k][1]=="m2" %>>m2</option>
-                                    <option <%= "selected" if @hash[k][1]=="u" %>>u</option>
+                                    <option <%= "selected" if @hash[k][1]=="u"||"" %>>u</option>
                                   </select>
                               </td>
                               <td width="5%">
@@ -199,6 +198,19 @@
                 </address>
               </div>             
             </div>
+             <hr class='hr-normal'>
+
+
+            <div class='row'>
+              <div class='col-sm-11 col-md-offset-1'>
+                <div class="form-group">
+                        <label class="col-md-2 control-label" for="inputTextArea1">Commentaire pour le devis</label>
+                        <div class="col-md-9">
+                          <textarea class="form-control" id="qcomment" value="<%= @quote.comment %>" rows="3" placeholder="Commentaire"></textarea>
+                        </div>
+                </div>
+              </div>
+            </div>
           </div>
             <div class='row'>
               <div class='col-sm-12'>
@@ -213,7 +225,7 @@
               </div>
               <div class='col-sm-6' >
                 <div class='text-right'>
-                  <a class='btn btn-success' onclick="quoteSaveback(<%= @quote.id %>); return false;">Sauve et retour</a>
+                  <a class='btn btn-success' onclick="quoteSaveback(<%= @quote.id %>); return false;">Sauvegarder</a>
                   <a class='btn btn-success' onclick="quoteSend(<%= @quote.id %>); return false;">Envoyer devis</a>
                 </div>
               </div>  
@@ -232,6 +244,7 @@
 $(document).ready(function() {
 idclient="<%=Client.find_by_id(@quote.client_id) %>";
 $("#nav_quote").attr('class', 'active');
+document.getElementById("qcomment").value="<%= @quote.comment %>";
 
 });
 
@@ -253,7 +266,7 @@ $(document.getElementsByClassName('index')).each(function(idx, el) {
 		var cell6 = row.insertCell(5);
 		cell1.innerHTML = '<div class="text-center"><a href="" onclick="deleteLine(this); return false;" class="index" id="'+indexq+'"><i class="icon-trash"></i></a></div>';
 		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
-		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
+		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option>u</option><option>m2</option><option>ml</option></select>';
 		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
 		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">€</span></div></div>';
 		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> €</b></div>';
@@ -336,6 +349,7 @@ function quoteUpdate(id,num_function){
   event.preventDefault();
   var url_up="/quotes/"+id
   var title=document.getElementById("qtitle").value;
+  var comment=document.getElementById("qcomment").value;
   var total=parseFloat(document.getElementById("amount_total").innerHTML).toFixed(2);
   var tax_rate;
   var q_send;
@@ -358,6 +372,7 @@ function quoteUpdate(id,num_function){
       }
       else{}
     }
+
   var list=[];
  
   $(document.getElementsByClassName('index')).each(function(idx, el) { 
@@ -366,6 +381,7 @@ function quoteUpdate(id,num_function){
     var unit_id="unit_"+id;
     var qte_id="qte_"+id;
     var puht_id="puht_"+id;
+
     if (document.getElementById(description_id)==null){
       desc="";
     }
@@ -404,7 +420,8 @@ function quoteUpdate(id,num_function){
                  list: list,
                  client: idclient,
                  tax_rate: tax_rate,
-                 q_send: q_send
+                 q_send: q_send,
+                 comment: comment
                }}
         });
 
@@ -417,7 +434,7 @@ if (num_function==2){request.done(goBack());}
 
 
 function goBack() {
- window.location.replace("/quotes");
+ // window.location.replace("/quotes");
 }
 function goVisu(id) {
  var url="/visu_pdf/quote_visu."+id

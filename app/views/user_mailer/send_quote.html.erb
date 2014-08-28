@@ -4,7 +4,7 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Bonjour <%= @client.first_name.capitalize %>,</h1>
+    <h5>Bonjour <%= @client.first_name.capitalize %>,</h5>
     <p>
       Veuillez trouver le devis # <%=@quote.id%> pour <%=@quote.title%> d'un montant total t.t.c de <%= @quote.total.to_d*(1+@quote.tax_rate.to_d) if @quote.total!=nil %> euros.   <br>
     </p>
@@ -14,6 +14,8 @@
     <p>Cordialement,</p>
     <p> </p>
     <h4>Francois Oudot</h4><p>92 Henry street</p><p>94114 SF</p><p>0666666666</p><p>email</p>
+<p></p>
+    Si vous rencontrez un problème d’affichage, installez <a href="http://get.adobe.com/reader/">Adobe Reader</a>
 
   </body>
 </html>

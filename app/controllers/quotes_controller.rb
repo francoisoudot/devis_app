@@ -85,22 +85,22 @@ end
   total=params['q_param']['total']
   tax_rate=params['q_param']['tax_rate']
   l=params['q_param']['list']
+  comment=params['q_param']['comment']
   list=Array.new
     l.keys.each do |j|
       list << [l[j][0],l[j][1],l[j][2],l[j][3]]
     end
-   quote_p={:title=>title,:total=>total,:list=>list,:tax_rate=>tax_rate}
+   quote_p={:title=>title,:total=>total,:list=>list,:tax_rate=>tax_rate,:comment=>comment}
    @quote.update(quote_p)
    send_quote (@quote)
 
-   format.json { render json: 'Ok' }
   # respond_to do |format|
   #   if @quote.update(quote_p)
-  #       format.html { redirect_to action: 'index'}
-  #       # format.json { head :no_content }
+  #       format.html {}
+        format.json { head :no_content }
   #   else
-  #       format.html { redirect_to action: 'index'}
-  #       # format.json { render json: @quote.errors, status: :unprocessable_entity }
+  #       format.html {}
+  #       format.json { render json: @quote.errors, status: :unprocessable_entity }
   #   end
   # end
   end
