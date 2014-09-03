@@ -8,10 +8,11 @@
     <div class='page-header'>
       <h1 class='pull-left'>
         <i class='icon-inbox'></i>
-        <span>Nouveau devis </span> - <input class="input-lg" id="qtitle" value="" placeholder="Titre">
+        <span>Nouveau devis </span>
       </h1>
     </div>
 	  <div class='col-sm-12'>
+      <h3>1. Choisir le client</h3>
     <div class='row' id='detail'>
       <div class='col-sm-12'>
         <div class='box'>
@@ -49,6 +50,7 @@
 				        </div>
 				        <address>
 				          <strong><div id='full_name'></div></strong>
+                  <div id='company'></div>
 				          <a href='mailto:#' id='email'></a>
 				        </address>
 				        <div class='lead'>
@@ -63,163 +65,35 @@
 				        </address>
 						      </div>
 						    </div>
-						    <div class='col-sm-6'>
-						      <div class='clearfix'></div>
-						      <hr class='hr-normal'>
-						    </div>
-						  </div>
-						</div>
+              </div>
+            </div>
 
-
-
-           
-            <hr class='hr-normal'>
+       <h3>2. Informations générales sur le devis</h3>
 
       <div class="box-content box-no-padding">
-        <div class="responsive-table">
-          <div class="scrollable-area">
-            <div class='clearfix'></div>
-            <table class='table table-bordered table-hover table-striped' id='table_quote'>
-              <thead>
-                <tr>
-                  <th width="5%">
-                  </th>
-                  <th width="45%">Désignation</th>
-                  <th width="10%">
-                    <div class='text-center'>Unité</div>
-                  </th>
-                  <th width="5%">
-                    <div class='text-center'>Quantité</div>
-                  </th>
-                  <th width="20%">
-                    <div class='text-center'>Prix unitaire</div>
-                  </th>
-                  <th width="15%">
-                    <div class='text-right'>Montant</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                 <div>
-                      <tr>
-                        <td width="5%">
-                            <div class='text-center'> 
-                              <a href="" onclick="deleteLine(this); return false;" class="index" id="0"><i class="icon-trash"></i></a>
-                             </div>
-                        </td>
-                        <td width="45%"> 
-                        	<input class="form-control input-sm" id="description_0" placeholder="Description" value="">
-                        </td>
-                        <td width="10%">
-							<select class="form-control input-sm" data-rule-required="true" id="unit_0" name="validation_select">
-                              <option >ml</option>
-                              <option >m2</option>
-                              <option "selected" >u</option>
-                            </select>
-                        </td>
-                        <td width="5%">
-                          <div class='text-center'> 
-                          	<input class="form-control input-sm" id="qte_0" placeholder="Qte" value="" onchange="priceUpdate(0,this); return false;">
-                          	
-                          </div>
-                        </td>
-                        <td width="20%">
-                          <div class='text-right'>
-                          	<div class="input-group">
-                                
-                                <input class="form-control input-sm text-right" placeholder="PUHT"
-                                value="" id="puht_0" onchange='priceUpdate("0",this);'>
-                                <span class="input-group-addon">
-                                  E
-                                </span>
-                              </div>
-                          </div>
-                        </td>
-                        <td width="15%">
-                          <div class='text-right' >
-                          	<b class="montant" id="montant_0"></b> <b> €</b>
-                          </div>
-                        </td>
-                      </tr>
-                    </div>
-                <div id='new_line'></div>
-              </tbody>
-            </table>
-            <div id='new_line'></div>
+        <div class='box'>
+          <div class='box-content'>
+            <div class='form-group'>
+              <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+              <label for='q_title'>Titre du devis</label>
+              <input class='form-control' id='q_title' placeholder='Titre du devis' type='text' value=''>
+            </div>
+            <div class='form-group'>
+              <label for='q_comment'>Commentaire sur le devis</label>
+              <textarea class='form-control' id='q_comment' placeholder="Commentaire pour le devis - le texte s'affichera sur le devis envoyé au client" rows='7'></textarea>
             </div>
           </div>
         </div>
-                
-           <div class='row'>
-            <div class='col-sm-6'>    
-                <div class='text-left'>
-                 <a href'#' onclick="addLine()">Ajouter ligne</a>
-                </div>
-            </div>
-            <div class='col-sm-6'> 
-              <div class='row'> 
-                <div class='col-sm-6'>   
-                  <div class='text-left'>
-                    <h4 class='subtotal contrast' > 
-                      Total hors taxes
-                    </h4>
-                  </div>
-                </div>
-                <div class='col-sm-6'>    
-                    <div class='text-right'>
-                      <h4 class='subtotal contrast' >
-                        <b id="amount_total"></b><b> €</b>
-                        
-                      </h4>
-                    </div>
-                </div>
-              </div>
-              <div class='row'>
-                <div class='col-sm-1 text-left'>   
-                      <h4 class='subtotal contrast' >TVA </h4> 
-                </div>
-                <div class='col-sm-3'>   
-                          <select class="form-control default" id="tax_rate" onchange="tax_rateUpdate(this);return false;">
-                                            <option "selected">0%</option>
-                                            <option>7%</option>
-                                            <option>20%</option>
-                          </select>            
-                </div>
-                <div class='col-sm-2 text-left'>   
-                </div>
-                <div class='col-sm-6'>    
-                    <div class='text-right'>
-                      <h4 class='subtotal contrast' >
-                        <b id="tax_amount"></b><b> €</b>
-                      </h4>
-                    </div>
-                </div>
-              </div>
-              <div class='row'> 
-                <div class='col-sm-6'>   
-                  <div class='text-left'>
-                    <h4 class='subtotal contrast' > 
-                      Total toutes taxes
-                    </h4>
-                  </div>
-                </div>
-                <div class='col-sm-6'>    
-                    <div class='text-right'>
-                      <h4 class='subtotal contrast' >
-                        <b id="amount_total_ttc"></b><b> €</b>
-                        
-                      </h4>
-                    </div>
-                </div>
-              </div>
-            </div>
+      </div>
+
+            
           </div>
             <hr class='hr-normal'>
             <div>
               <span>
                 <div class='text-right'>
 <!--                   <a class='btn btn-success' target="_blank" onclick="quoteVisu(); return false;">Visualiser</a> -->
-                  <a class='btn btn-success' onclick="quoteSaveback(); return false;">Sauvegarder</a>
+                  <a class='btn btn-success' onclick="quoteNext(); return false;">Suivant</a>
                 </div>
               </span>                  
             </div>
@@ -228,8 +102,6 @@
       </div>
     </div>
   </div>
-</div>
-</div> 
 
 <script>
   $( document ).ready(function() {
@@ -252,6 +124,9 @@ function clientShow(id){
   $( "#editClient" ).empty();
   $("#deleteClient").attr("href", "#");
   $( "#deleteClient" ).empty();
+ $( "#company" ).empty();
+
+
 
   var url_client_up="/clients/"+id+"/edit";
   var url_up="/clients/"+id+".json";
@@ -259,6 +134,8 @@ function clientShow(id){
 
   var request=$.get( url_up, function( data ) {
   $( "#full_name" ).append( "" + capitaliseFirstLetter(data.client.last_name) + " " + capitaliseFirstLetter(data.client.first_name) );
+ $( "#company" ).append( "" + capitaliseFirstLetter(data.client.res1) );
+
   $( "#email" ).append( "" + data.client.email );
   $( "#email" ).attr("href", "mailto:"+data.client.email );
   $( "#address" ).append( "" + data.client.address );
@@ -276,84 +153,12 @@ function clientShow(id){
 
 function capitaliseFirstLetter(string)
 {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
-function addLine() {
-    var indexq=0;
-$(document.getElementsByClassName('index')).each(function(idx, el) {
-  indexq=Math.max(indexq, parseInt(el.id))+1;
-});
-
-		var table = document.getElementById("table_quote");
-		var row = table.insertRow(-1);
-		var cell1 = row.insertCell(0);
-		var cell2 = row.insertCell(1);
-		var cell3 = row.insertCell(2);
-		var cell4 = row.insertCell(3);
-		var cell5 = row.insertCell(4);
-		var cell6 = row.insertCell(5);
-		cell1.innerHTML = '<div class="text-center"><a href="" onclick="deleteLine(this); return false;" class="index" id="'+indexq+'"><i class="icon-trash"></i></a></div>';
-		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
-		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option></option><option>ml</option><option>m2</option><option>u</option></select>';
-		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
-		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">€</span></div></div>';
-		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> €</b></div>';
-
-}
-
-function deleteLine(item){
-	$(item).closest('tr').remove();  
-}
-
-
-function priceUpdate(num,item){
-var amount_id="montant_"+num;
-var qte_id="qte_"+num;
-var puht_id="puht_"+num;
-if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
-    var amount=(parseFloat(document.getElementById(qte_id).value.replace(",", "."))
-		*parseFloat(document.getElementById(puht_id).value.replace(",", "."))).toFixed(2).toString();
-    document.getElementById(amount_id).innerHTML=amount;
-}
-var i=0;
-var total=0; 
-
-var l2=document.getElementsByClassName('montant');  
-$(l2).each(function(idx, el) {
-  if (document.getElementById(el.id).innerHTML!=''&& !isNaN(document.getElementById(el.id).innerHTML)){
-    total=(parseFloat(total)+parseFloat(document.getElementById(el.id).innerHTML)).toFixed(2);
+  if (string==null){
+    return ""
   }
-});
-document.getElementById("amount_total").innerHTML=total.toString();
-}
-
-function tax_rateUpdate(item){
-  var tax_rate;
-  var amount_total;
-  if (document.getElementById("tax_rate")==null){
-      tax_rate="";
-    }
-    else{
-      tax_rate=document.getElementById("tax_rate").value;
-      if (tax_rate=="20%"){
-        tax_rate=0.2;
-      }
-      if (tax_rate=="7%"){
-        tax_rate=0.07;
-      }
-      if (tax_rate==""){
-        tax_rate=0;
-      }
-      else{}
-    }
-
-
-  amount_total=document.getElementById("amount_total").innerHTML;
-  document.getElementById("tax_amount").innerHTML=(parseFloat(amount_total)*parseFloat(tax_rate)).toFixed(2).toString();
-  document.getElementById("amount_total_ttc").innerHTML=(parseFloat(amount_total)*(1+parseFloat(tax_rate))).toFixed(2).toString();
-
+  else{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 }
 
 function quoteCreate(num_function){
@@ -363,59 +168,8 @@ function quoteCreate(num_function){
   }
   event.preventDefault();
   var url_up="/quotes"
-  var title=document.getElementById("qtitle").value;
-  var total=parseInt(document.getElementById("amount_total").innerHTML);
-  var tax_rate;
-  if (document.getElementById("tax_rate")==null){
-      tax_rate=0;
-    }
-    else{
-      tax_rate=document.getElementById("tax_rate").value;
-      if (tax_rate=="20%"){
-        tax_rate=0.2;
-      }
-      if (tax_rate=="7%"){
-        tax_rate=0.07;
-      }
-      if (tax_rate==""){
-        tax_rate=0;
-      }
-      else{}
-    }  var list=[];
- 
-  $(document.getElementsByClassName('index')).each(function(idx, el) { 
-    var id=el.id;
-    var description_id="description_"+id;
-    var unit_id="unit_"+id;
-    var qte_id="qte_"+id;
-    var puht_id="puht_"+id;
-    if (document.getElementById(description_id)==null){
-      desc="";
-    }
-    else{
-      desc=document.getElementById(description_id).value;
-    }
-    if (document.getElementById(unit_id)==null){
-      uni="";
-    }
-    else{
-      uni=document.getElementById(unit_id).value;
-    }
-    if (document.getElementById(qte_id)==null){
-      qte="";
-    }
-    else{
-      qte=document.getElementById(qte_id).value.replace(",", ".");
-    }
-    if (document.getElementById(puht_id)==null){
-      puht="";
-    }
-    else{
-      puht=document.getElementById(puht_id).value.replace(",", ".");
-    }
-    var sublist=[desc,uni,qte,puht];
-    list.push(sublist);
-  });
+  var title=document.getElementById("q_title").value;
+  var comment=document.getElementById("q_comment").value;
 
         request=$.ajax({
         url: url_up,
@@ -423,10 +177,8 @@ function quoteCreate(num_function){
         beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
         data: {q_param: {
                  title: title, 
-                 total: total,
-                 list: list,
+                 comment: comment,
                  client: idclient,
-                 tax_rate: tax_rate 
                }},
         success: function(data, textStatus, jqXHR) {
                   // if (num_function==0){request.done(goBack());}
@@ -441,9 +193,9 @@ function quoteCreate(num_function){
 }
 
 
-function goBack() {
- window.location.replace("/quotes");
-}
+// function goBack() {
+//  window.location.replace("/quotes");
+// }
 
 function goShow(quote_id) {
 var url_show;
@@ -453,21 +205,21 @@ url_show="/quotes/"+quote_id;
  window.location.replace(url_show);
 return true;
 }
-function setData(data){
-  data=data;
-  var url_visu="/visu_pdf/quote_visu."+data;
-  // window.location.replace(url_show);
-  window.open(url_visu, '_blank');
-  return true;
-}
+// function setData(data){
+//   data=data;
+//   var url_visu="/visu_pdf/quote_visu."+data;
+//   // window.location.replace(url_show);
+//   window.open(url_visu, '_blank');
+//   return true;
+// }
 
-function quoteSaveback(){
+function quoteNext(){
 quoteCreate(0);
 }
 
-function quoteVisu(){
-quoteCreate(1);
-}
+// function quoteVisu(){
+// quoteCreate(1);
+// }
 </script>
 
 

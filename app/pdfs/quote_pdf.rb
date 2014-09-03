@@ -31,6 +31,7 @@ class QuotePdf < Prawn::Document
     quote_details
     quote_total
     quote_cond
+    quote_sign
     repeat :all do
       #Create a bounding box and move it up 18 units from the bottom boundry of the page
       bounding_box [bounds.left, bounds.bottom + 8], width: bounds.width do
@@ -53,8 +54,6 @@ class QuotePdf < Prawn::Document
     94114 San Francisco",
     :indent_paragraphs => 80
 
-    text "le #{Time.now.strftime("%d/%m/%Y")} , ",
-    :indent_paragraphs => 370    
     move_down 40
 
     text "#{@client.first_name.capitalize} #{@client.last_name.capitalize} 
@@ -62,7 +61,7 @@ class QuotePdf < Prawn::Document
     #{@client.postal_code} #{@client.city.capitalize}",
     :indent_paragraphs => 370
 
-    move_down 40
+    move_down 20
 
     text "Devis", 
     :indent_paragraphs => 40, size: 22
@@ -70,6 +69,8 @@ class QuotePdf < Prawn::Document
 
   def objet
     move_down 20
+    text "Date: #{Time.now.strftime("%d/%m/%Y")} ",
+    :indent_paragraphs => 40  
     text "Objet: #{@quote.title}",
     :indent_paragraphs => 40
 
@@ -122,7 +123,8 @@ class QuotePdf < Prawn::Document
   def quote_cond
     move_down 50
     if @comment !=""
-      text @comment,:indent_paragraphs => 40
+      text "Commentaire sur le devis:",:indent_paragraphs => 40, :size => 8
+      text @comment,:indent_paragraphs => 40, :size => 8
       move_down 20
     end
     text "Conditions de règlement:" ,:indent_paragraphs => 40 , style:  :bold, :size => 8
@@ -137,6 +139,14 @@ class QuotePdf < Prawn::Document
          - Le non-respect des conditions de règlement annulera notre intervention",
     :indent_paragraphs => 40, style:  :bold, :size => 8
   end
+
+  def quote_sign
+  move_down 20
+      text "Signature précédée de la mention 'Bon pour accord' ",
+      :indent_paragraphs => 250  
+
+  end
+
 
 def number_to_euro(amount)
   number_to_currency(amount,:unit=>'€', :separator => ",", :delimiter => " ", format: "%n %u")

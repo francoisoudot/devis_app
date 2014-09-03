@@ -27,19 +27,19 @@
                   <table class='table table-bordered table-hover table-striped' id='table_quote'>
                     <thead>
                       <tr>
-                        <th>
+                        <th width="5%">
                         </th>
-                        <th>Désignation</th>
-                        <th>
+                        <th width="45%">Désignation</th>
+                        <th width="10%">
                           <div class='text-center'>Unité</div>
                         </th>
-                        <th>
+                        <th width="5%">
                           <div class='text-center'>Quantité</div>
                         </th>
-                        <th>
+                        <th width="20%">
                           <div class='text-center'>Prix unitaire</div>
                         </th>
-                        <th>
+                        <th width="15%">
                           <div class='text-right'>Montant</div>
                         </th>
                       </tr>
@@ -249,7 +249,7 @@
                               <label for='email_body'>Corps</label>
                               <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
 
-Veuillez trouver le devis pour <%=@quote.title%>.
+Veuillez trouver ci-joint le devis pour <%=@quote.title%>.
 
 Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question.
 
@@ -509,6 +509,7 @@ if (num_function==2){request.done(goSend(id));}
 
 function goBack() {
  // window.location.replace("/quotes");
+ alert("Devis sauvegardé");
 }
 function goVisu(id) {
  var url="/visu_pdf/quote_visu."+id
@@ -563,6 +564,7 @@ data: {m_param: {
        }}
 });
 
+request.done(alert("Devis envoyé"));
 }
 
 

@@ -16,8 +16,16 @@ class QuotesController < ApplicationController
    # @clients = Client
    # @alpha=('a'..'z').to_a + ('0'..'9').to_a
    @client= Client.find_by_id(@quote.client_id)
+   if @quote.list==nil
+    @lmax=0
+    else
    @lmax=@quote.list.length
+   end
+   if @quote.total==nil
+    @total=0
+    else
    @total=@quote.total
+   end
    @tax_rate=@quote.tax_rate
    if @tax_rate==nil
      @tax_rate=0
@@ -28,6 +36,9 @@ class QuotesController < ApplicationController
       @hash.merge!({i => @quote.list[i]})
       i=i+1
      end
+     if @lmax==0
+      @hash={0=>["", "", "", ""]}
+    end
   end
 
   # GET /quotes/new
@@ -52,14 +63,8 @@ class QuotesController < ApplicationController
 def create
   @client=Client.find_by_id(params['q_param']['client'])
   title=params['q_param']['title']
-  total=params['q_param']['total']
-  tax_rate=params['q_param']['tax_rate']
-  l=params['q_param']['list']
-  list=Array.new
-    l.keys.each do |j|
-      list << [l[j][0],l[j][1],l[j][2],l[j][3]]
-    end
-  quote_p={:title=>title,:total=>total,:list=>list,:tax_rate=>tax_rate}
+  comment=params['q_param']['comment']
+  quote_p={:title=>title,:comment=>comment}
   @quote = @client.quotes.create(quote_p)
   render json:  {:quote_id=>@quote.id}
 
