@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
+  resources :invoices
+
   resources :quotes
   resources :clients
 
   resources :devis
   get '/modify_client' => 'application#modify_client'
   get '/visu_pdf/quote_visu' => 'visu_pdf#quote_visu'
+  put '/visu_pdf/quote_send' => 'visu_pdf#quote_send'
   root 'quotes#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

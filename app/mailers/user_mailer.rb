@@ -15,7 +15,25 @@ class UserMailer < ActionMailer::Base
            )
     end
   end
-
+def send_quote2(quote,to,obj,bod,att)
+    @quote=quote
+    @client= Client.find_by_id(@quote.client_id)
+    mail_to=to
+    mail_object=obj
+    mail_body=bod
+    subject=mail_object
+    if att=="true"
+      pdf = QuotePdf.new(@quote, view_context)
+      attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+    end
+    if @client.email != nil
+      mail(from:'no-reply@whatever.net',
+            to: mail_to, 
+           subject: subject,
+           body: mail_body
+           )
+    end
+  end
  
 
 

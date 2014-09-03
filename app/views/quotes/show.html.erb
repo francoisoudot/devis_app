@@ -189,7 +189,7 @@
               <div class='col-sm-5 col-md-offset-1'>
                 <div class='lead'>
                   <i class='icon-envelope contrast'></i>
-                  Addresse client
+                  Adresse client
                 </div>
                 <address>
                   <strong><div id='full_name'><%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%></div></strong>
@@ -226,9 +226,59 @@
               <div class='col-sm-6' >
                 <div class='text-right'>
                   <a class='btn btn-success' onclick="quoteSaveback(<%= @quote.id %>); return false;">Sauvegarder</a>
-                  <a class='btn btn-success' onclick="quoteSend(<%= @quote.id %>); return false;">Envoyer devis</a>
+                  <a class='btn btn-success' data-toggle="modal" href="#modal-envoyer">Envoyer devis</a>
                 </div>
               </div>  
+                    <div class='modal fade' id='modal-envoyer' tabindex='1'>
+                      <div class='modal-dialog'>
+                        <div class='modal-content'>
+                          <div class='modal-header'>
+                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                            <h4 class='modal-title' id='myModalLabel'>Mail pour le devis <%= @quote.title %></h4>
+                          </div>
+                          <div class='modal-body'>
+                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                              <label for='email_to'>Envoyé à</label>
+                              <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_object'>Objet</label>
+                              <input class='form-control' id='email_object' placeholder='Objet' type='text' value="Réponse à votre demande de devis pour <%= @quote.title %> de l'entreprise flatty">
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_body'>Corps</label>
+                              <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+
+Veuillez trouver le devis pour <%=@quote.title%>.
+
+Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question.
+
+Cordialement,
+
+Francois Oudot
+92 Henry street
+94114 SF
+0666666666
+email</textarea>
+                            </div>
+                            <hr class='hr-normal'>
+                            <div class='form-group'>
+                              <div class='checkbox'>
+                                <label>
+                                  <input type='checkbox' checked id="attachement">
+Envoyer le devis attaché au mail                                </label>
+                              </div>
+                            </div>
+                            </form>
+              
+                          </div>
+                          <div class='modal-footer'>
+                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="quoteSend(<%= @quote.id %>);">Envoyer</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
               
             
           </div>
@@ -451,7 +501,7 @@ function quoteUpdate(id,num_function){
 
 if (num_function==0){request.done(goBack());}
 if (num_function==1){request.done(goVisu(id));}
-if (num_function==2){request.done(goBack());}
+if (num_function==2){request.done(goSend(id));}
 
     
 }
@@ -466,6 +516,53 @@ window.open(
   url,
   '_blank'
 );
+}
+function goSend(id) {
+var id=id;
+var email_to;
+var email_object;
+var email_body;
+var attachement=false;
+
+
+if (document.getElementById("email_to")==null){
+  email_to="";
+}
+else{
+  email_to=document.getElementById("email_to").value;
+}
+if (document.getElementById("email_object")==null){
+  email_object="";
+}
+else{
+  email_object=document.getElementById("email_object").value;
+}
+if (document.getElementById("email_body")==null){
+  email_body="";
+}
+else{
+  email_body=document.getElementById("email_body").value;
+}
+if (document.getElementById("attachement")==null){
+  attachement=false;
+}
+else{
+  attachement=document.getElementById("attachement").checked;
+}
+var url_send= "/visu_pdf/quote_send";  
+var request=$.ajax({
+url: url_send,
+type: "PUT",
+beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+data: {m_param: {
+         email_object: email_object, 
+         email_to: email_to,
+         email_body: email_body,
+         id: id,
+         attachement: attachement
+       }}
+});
+
 }
 
 

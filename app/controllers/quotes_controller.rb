@@ -123,14 +123,14 @@ end
     def set_quote
       
     end
-    def send_quote(quote)
-      @quote=quote
-      if params['q_param']['q_send']=="true"
-        UserMailer.send_quote(@quote).deliver
-      end
+    # def send_quote(quote)
+    #   @quote=quote
+    #   if params['q_param']['q_send']=="true"
+    #     UserMailer.send_quote(@quote).deliver
+    #   end
 
 
-    end
+    # end
 
 
     # Never trust parameters from the scary internet, only allow the white list through.
