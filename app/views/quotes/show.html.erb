@@ -175,6 +175,18 @@
 
 
             <div class='row'>
+              <div class='col-sm-11 col-md-offset-1'>
+                <div class="form-group">
+                        <label class="col-md-2 control-label" for="inputTextArea1">Commentaire pour le devis</label>
+                        <div class="col-md-9">
+                          <textarea class="form-control" id="qcomment" value="<%= @quote.comment %>" rows="3" placeholder="Commentaire"></textarea>
+                        </div>
+                </div>
+              </div>
+            </div>
+            <hr class='hr-normal'>
+
+            <div class='row'>
               <div class='col-sm-5 col-md-offset-1'>
                 <div class='lead'>
                   <i class='icon-user contrast'></i>
@@ -200,16 +212,41 @@
             </div>
              <hr class='hr-normal'>
 
-
             <div class='row'>
               <div class='col-sm-11 col-md-offset-1'>
-                <div class="form-group">
-                        <label class="col-md-2 control-label" for="inputTextArea1">Commentaire pour le devis</label>
-                        <div class="col-md-9">
-                          <textarea class="form-control" id="qcomment" value="<%= @quote.comment %>" rows="3" placeholder="Commentaire"></textarea>
-                        </div>
+                <div class='lead'>
+                  <i class='icon-time contrast'></i>
+                  Statistiques du devis
                 </div>
               </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                  Devis créé il y a <%= distance_of_time_in_words(Time.now, @quote.created_at) %>
+                </div>
+              </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                   <%= 
+                  if @quote.starttime==nil || @quote.starttime==""
+                    "Devis pas encore envoyé"
+                  else
+                    "Dernier devis envoyé il y a "+distance_of_time_in_words(Time.now, @quote.starttime) 
+                  end
+                  %>
+                </div>
+              </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                 Devis envoyé <%= 
+                  if @quote.res2==nil || @quote.res2==""
+                  "0" 
+                  else 
+                   @quote.res2
+                   end %> fois
+
+                </div>
+              </div>
+
             </div>
           </div>
             <div class='row'>
@@ -564,9 +601,15 @@ data: {m_param: {
        }}
 });
 
-request.done(alert("Devis envoyé"));
+request.done(finishSend(id));
 }
 
+function finishSend(id){
+  alert("Devis envoyé");
+  var url_show;
+  url_show="/quotes/"+id;
+ window.location.replace(url_show);
+}
 
 
 function quoteSaveback(id){

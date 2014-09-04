@@ -142,4 +142,5 @@ end
     def quote_params
       params[:quote]
     end
+
 end
