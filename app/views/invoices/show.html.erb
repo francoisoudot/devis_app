@@ -1,4 +1,656 @@
-<p id="notice"><%= notice %></p>
+<div id="notice"><%= notice %></div> 
 
-<%= link_to 'Edit', edit_invoice_path(@invoice) %> |
-<%= link_to 'Back', invoices_path %>
+
+
+<div id='orders'>
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <div class='row'>
+        <div class='col-sm-8'>
+          <h1 class='pull-left'>
+            <i class='icon-inbox'></i>
+            <span>Facture </span> - <input class="input-lg" id="qtitle" value="<%= @invoice.title %>" >
+          </h1>
+        </div>
+        <div class='col-sm-4'>
+            </p>
+            <h4>% payé </h4>
+            </p><p>
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
+            </div>
+            </p>
+        </div>
+      </div>
+    </div>
+	  <div class='col-sm-12'>
+    <div class='row' id='detail'>
+      <div class='col-sm-12'>
+        <div class='box'>
+          <div class='box-content'>
+            <div class="box-content box-no-padding">
+              <div class="responsive-table">
+                <div class="scrollable-area">
+                  <div class='clearfix'></div>
+                  <table class='table table-bordered table-hover table-striped' id='table_invoice'>
+                    <thead>
+                      <tr>
+                        <th width="5%">
+                        </th>
+                        <th width="45%">Désignation</th>
+                        <th width="10%">
+                          <div class='text-center'>Unité</div>
+                        </th>
+                        <th width="5%">
+                          <div class='text-center'>Quantité</div>
+                        </th>
+                        <th width="20%">
+                          <div class='text-center'>Prix unitaire</div>
+                        </th>
+                        <th width="15%">
+                          <div class='text-right'>Montant</div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                       <% @hash.keys.each do |k| %>
+                       <div>
+                            <tr>
+                              <td width="5%">
+                                  <div class='text-center'> 
+                                    <a href="" onclick="deleteLine(this); return false;" class="index" id="<%=k%>"><i class="icon-trash"></i></a>
+                                   </div>
+                              </td>
+                              <td width="45%"> 
+                              	<input class="form-control input-sm" id="description_<%=k%>" placeholder="Description" value="<%= @hash[k][0] %>">
+                              </td>
+                              <td width="10%">
+                    				
+
+
+
+      							             <select class="form-control input-sm" data-rule-required="true" id="unit_<%=k%>" name="validation_select">
+                                    <option <%= "selected" if @hash[k][1]=="ml" %>>ml</option>
+                                    <option <%= "selected" if @hash[k][1]=="m2" %>>m2</option>
+                                    <option <%= "selected" if @hash[k][1]=="u"||"" %>>u</option>
+                                  </select>
+                              </td>
+                              <td width="5%">
+                                <div class='text-center'> 
+                                	<input class="form-control input-sm" id="qte_<%=k%>" placeholder="Qte" value="<%= @hash[k][2].to_d %>" onchange="priceUpdate(<%=k%>,this); return false;">
+                                	
+                                </div>
+                              </td>
+                              <td width="20%">
+                                <div class='text-right'>
+                                	<div class="input-group">
+                                      
+                                      <input class="form-control input-sm text-right" placeholder="PUHT"
+                                      value="<%= @hash[k][3].to_d %>" id="puht_<%=k%>" onchange="priceUpdate(<%=k%>,this);return false;">
+                                      <span class="input-group-addon">
+                                       €
+                                      </span>
+                                    </div>
+                                </div>
+                              </td>
+                              <td width="15%">
+                                <div class='text-right' >
+                                	<b class="montant" id="montant_<%=k%>">
+                                    <%= @hash[k][2].to_d*@hash[k][3].to_d %></b><b> €</b>
+                                </div>
+                              </td>
+                            </tr>
+                          </div>
+
+                      <% end %>
+                      <div id='new_line'></div>
+                    </tbody>
+
+                  </table>
+           
+                  <div id='new_line'></div>
+                </div>
+              </div>
+            </div>
+           <div class='row'>
+            <div class='col-sm-6'>    
+        				<div class='text-left'>
+        				 <a href'#' onclick="addLine()">Ajouter ligne</a>
+          			</div>
+            </div>
+            <div class='col-sm-6'> 
+              <div class='row'> 
+                <div class='col-sm-6'>   
+                  <div class='text-left'>
+                    <h4 class='subtotal contrast' > 
+                      Total hors taxes
+                    </h4>
+                  </div>
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="amount_total"><%= @total.to_d  if @total!=nil%></b><b> €</b>
+                        
+                      </h4>
+                    </div>
+                </div>
+              </div>
+              <div class='row'>
+                <div class='col-sm-1 text-left'>   
+                      <h4 class='subtotal contrast' >TVA </h4> 
+                </div>
+                <div class='col-sm-3'>   
+                          <select class="form-control default" id="tax_rate" onchange="tax_rateUpdate(this);return false;">
+                                            <option <%= "selected" if @tax_rate.to_s=="" %>>0%</option>
+                                            <option <%= "selected" if @tax_rate.to_s=="0.07" %>>7%</option>
+                                            <option <%= "selected" if @tax_rate.to_s=="0.2" %>>20%</option>
+                          </select>            
+                </div>
+                <div class='col-sm-2 text-left'>   
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="tax_amount"><%= @total.to_d*@tax_rate.to_d if @total!=nil %></b><b> €</b>
+                      </h4>
+                    </div>
+                </div>
+              </div>
+              <div class='row'> 
+                <div class='col-sm-6'>   
+                  <div class='text-left'>
+                    <h4 class='subtotal contrast' > 
+                      Total toutes taxes
+                    </h4>
+                  </div>
+                </div>
+                <div class='col-sm-6'>    
+                    <div class='text-right'>
+                      <h4 class='subtotal contrast' >
+                        <b id="amount_total_ttc"><%= @total.to_d*(1+@tax_rate.to_d) if @total!=nil %></b><b> €</b>
+                        
+                      </h4>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+            <hr class='hr-normal'>
+
+
+            <div class='row'>
+              <div class='col-sm-11 col-md-offset-1'>
+                <div class="form-group">
+                        <label class="col-md-2 control-label" for="inputTextArea1">Commentaire pour la facture</label>
+                        <div class="col-md-9">
+                          <textarea class="form-control" id="qcomment" value="<%= @invoice.comment %>" rows="3" placeholder="Commentaire"></textarea>
+                        </div>
+                </div>
+              </div>
+            </div>
+            <hr class='hr-normal'>
+
+            <div class='row'>
+              <div class='col-sm-5 col-md-offset-1'>
+                <div class='lead'>
+                  <i class='icon-user contrast'></i>
+                  Contact client
+                </div>
+                <address>
+                  <strong><div id='full_name'><%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%></div></strong>
+                  <a href='mailto:<%=@client.email%>' id='email'><%=@client.email%></a>
+                  <div id='phone'><%=@client.phone%></div>
+                </address>
+              </div>
+              <div class='col-sm-5 col-md-offset-1'>
+                <div class='lead'>
+                  <i class='icon-envelope contrast'></i>
+                  Adresse client
+                </div>
+                <address>
+                  <strong><div id='full_name'><%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%></div></strong>
+                  <div id='address'><%=@client.address%></div>
+                  <div id='city'><%=@client.city.capitalize%> <%=@client.postal_code%></div>
+                </address>
+              </div>             
+            </div>
+             <hr class='hr-normal'>
+
+            <div class='row'>
+              <div class='col-sm-11 col-md-offset-1'>
+                <div class='lead'>
+                  <i class='icon-time contrast'></i>
+                  Statistiques de la facture
+                </div>
+              </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                  Facture créé il y a <%= distance_of_time_in_words(Time.now, @invoice.created_at) %>
+                </div>
+              </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                   <%= 
+                  if @invoice.starttime==nil || @invoice.starttime==""
+                    "Facture pas encore envoyé"
+                  else
+                    "Dernière facture envoyée il y a "+distance_of_time_in_words(Time.now, @invoice.starttime) 
+                  end
+                  %>
+                </div>
+              </div>
+              <div class='col-sm-4'>
+                <div class='text-center'>
+                 Facture envoyée <%= 
+                  if @invoice.res2==nil || @invoice.res2==""
+                  "0" 
+                  else 
+                   @invoice.res2
+                   end %> fois
+
+                </div>
+              </div>
+
+            </div>
+          </div> 
+            <div class='row'>
+              <div class='col-sm-12'>
+              </div>
+
+              <div class='col-sm-6' class='text-left'>           
+                <div >
+                  
+                  <%= link_to 'Supprimer facture', @invoice, method: :delete, data: { confirm: 'Are you sure?' }, class:'btn btn-danger' %>
+                  <%=
+                  if @invoice.quote_id != nil || @invoice.quote_id!=""
+                  end
+                    %>
+                <a class="btn btn-success <%=
+                  if @invoice.quote_id == nil || @invoice.quote_id==""
+                    hide
+                  end%>
+                  " onclick="invoiceVisu(<%=@invoice.quote_id.to_s%>); return false;">Visualiser devis</a>
+                </div>
+              </div>
+              <div class='col-sm-6' >
+                <div class='text-right'>
+                  <a class='btn btn-success' onclick="invoiceSaveback(<%= @invoice.id %>); return false;">Sauvegarder</a>
+                  <a class='btn btn-success' data-toggle="modal" href="#modal-envoyer">Envoyer facture</a>
+                </div>
+              </div>  
+                    <div class='modal fade' id='modal-envoyer' tabindex='1'>
+                      <div class='modal-dialog'>
+                        <div class='modal-content'>
+                          <div class='modal-header'>
+                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                            <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= @invoice.title %></h4>
+                          </div>
+                          <div class='modal-body'>
+                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                              <label for='email_to'>Envoyé à</label>
+                              <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_object'>Objet</label>
+                              <input class='form-control' id='email_object' placeholder='Objet' type='text' value="Réponse à votre demande de devis pour <%= @invoice.title %> de l'entreprise flatty">
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_body'>Corps</label>
+                              <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+
+Veuillez trouver ci-joint le devis pour <%=@invoice.title%>.
+
+Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question.
+
+Cordialement,
+
+Francois Oudot
+92 Henry street
+94114 SF
+0666666666
+email</textarea>
+                            </div>
+                            <hr class='hr-normal'>
+                            <div class='form-group'>
+                              <div class='checkbox'>
+                                <label>
+                                  <input type='checkbox' checked id="attachement">
+Envoyer le devis attaché au mail                                </label>
+                              </div>
+                            </div>
+                            </form>
+              
+                          </div>
+                          <div class='modal-footer'>
+                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="invoiceSend(<%= @invoice.id %>);">Envoyer</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+              
+            
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div> 
+
+<script>
+$(document).ready(function() {
+idclient="<%=Client.find_by_id(@invoice.client_id) %>";
+$("#nav_invoice").attr('class', 'active');
+document.getElementById("qcomment").value="<%= @invoice.comment %>";
+
+});
+
+var idclient;
+
+function addLine() {
+    var indexq=0;
+$(document.getElementsByClassName('index')).each(function(idx, el) {
+  indexq=Math.max(indexq, parseInt(el.id))+1;
+});
+
+		var table = document.getElementById("table_invoice");
+		var row = table.insertRow(-1);
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+		var cell5 = row.insertCell(4);
+		var cell6 = row.insertCell(5);
+		cell1.innerHTML = '<div class="text-center"><a href="" onclick="deleteLine(this); return false;" class="index" id="'+indexq+'"><i class="icon-trash"></i></a></div>';
+		cell2.innerHTML = '<input class="form-control input-sm" id="description_'+indexq+'" placeholder="Description" value="">';
+		cell3.innerHTML ='<select class="form-control input-sm" data-rule-required="true" id="unit_'+indexq+'" name="validation_select"><option>u</option><option>m2</option><option>ml</option></select>';
+		cell4.innerHTML ='<div class="text-center"><input class="form-control input-sm" id="qte_'+indexq+'" placeholder="Qte" onchange="priceUpdate('+indexq+',this)"></div>';
+		cell5.innerHTML ='<div class="text-right"><div class="input-group"><input class="form-control input-sm text-right" placeholder="PUHT" id="puht_'+indexq+'" onchange="priceUpdate('+indexq+',this)"><span class="input-group-addon">€</span></div></div>';
+		cell6.innerHTML ='<div class="text-right"><b class="montant" id="montant_'+indexq+'" ></b> <b> €</b></div>';
+
+}
+
+function deleteLine(item){
+	$(item).closest('tr').remove();  
+}
+
+function changeClient(){
+event.preventDefault();
+var url = "/modify_client";
+$.ajax({
+  url: url,
+  success: function(data) {  $( "#dialog" ).dialog();
+    // $('#modify_client').replaceWith(data['form']);
+    // $('#modify_client').dialog({
+    //   title: 'New Event',
+    //   modal: true,
+    //   width: 500,
+    //   close: function(event, ui) { $('#modify_client').dialog('destroy') }
+    // });
+  }
+});
+
+}
+
+
+function priceUpdate(num,item){
+var amount_id="montant_"+num;
+var qte_id="qte_"+num;
+var puht_id="puht_"+num;
+var tax_rate;
+if (document.getElementById("tax_rate")==null){
+    tax_rate=0;
+  }
+  else{
+    tax_rate=document.getElementById("tax_rate").value;
+    if (tax_rate=="20%"){
+      tax_rate=0.2;
+    }
+    if (tax_rate=="7%"){
+      tax_rate=0.07;
+    }
+    if (tax_rate==""){
+      tax_rate=0;
+    }
+    else{}
+  }
+if ((document.getElementById(qte_id)!=null)&&(document.getElementById(puht_id)!=null)){
+    var amount=(parseFloat(document.getElementById(qte_id).value.replace(",", "."))
+		*parseFloat(document.getElementById(puht_id).value.replace(",", "."))).toFixed(2).toString();
+    if (isNaN(amount)){
+      document.getElementById(amount_id).innerHTML=0;
+    }
+    else{
+    document.getElementById(amount_id).innerHTML=amount;
+    }
+}
+var i=0;
+var total=0.0; 
+
+var l2=document.getElementsByClassName('montant');  
+$(l2).each(function(idx, el) {
+  if (document.getElementById(el.id).innerHTML!='' && !isNaN(document.getElementById(el.id).innerHTML)){
+    total=(parseFloat(total)+parseFloat(document.getElementById(el.id).innerHTML)).toFixed(2);
+  }
+});
+document.getElementById("amount_total").innerHTML=total.toString();
+document.getElementById("tax_amount").innerHTML=(parseFloat(total)*parseFloat(tax_rate)).toFixed(2).toString();
+document.getElementById("amount_total_ttc").innerHTML=(parseFloat(total)*(1+parseFloat(tax_rate))).toFixed(2).toString();
+}
+
+function tax_rateUpdate(item){
+  var tax_rate;
+  var amount_total;
+  if (document.getElementById("tax_rate")==null){
+      tax_rate=0;
+    }
+    else{
+      tax_rate=document.getElementById("tax_rate").value;
+      if (tax_rate=="20%"){
+        tax_rate=0.2;
+      }
+      if (tax_rate=="7%"){
+        tax_rate=0.07;
+      }
+      if (tax_rate==""){
+        tax_rate=0;
+      }
+      else{}
+    }
+
+
+  amount_total=document.getElementById("amount_total").innerHTML;
+  document.getElementById("tax_amount").innerHTML=(parseFloat(amount_total)*parseFloat(tax_rate)).toFixed(2).toString();
+  document.getElementById("amount_total_ttc").innerHTML=(parseFloat(amount_total)*(1+parseFloat(tax_rate))).toFixed(2).toString();
+
+}
+
+
+function invoiceUpdate(id,num_function){
+  event.preventDefault();
+  var url_up="/invoices/"+id
+  var title=document.getElementById("qtitle").value;
+  var comment=document.getElementById("qcomment").value;
+  var total=parseFloat(document.getElementById("amount_total").innerHTML).toFixed(2);
+  var tax_rate;
+  var q_send;
+  q_send=false;
+  if (num_function==2){q_send=true;}
+
+  if (document.getElementById("tax_rate")==null){
+      tax_rate=0;
+    }
+    else{
+      tax_rate=document.getElementById("tax_rate").value;
+      if (tax_rate=="20%"){
+        tax_rate=0.2;
+      }
+      if (tax_rate=="7%"){
+        tax_rate=0.07;
+      }
+      if (tax_rate==""){
+        tax_rate=0;
+      }
+      else{}
+    }
+
+  var list=[];
+ 
+  $(document.getElementsByClassName('index')).each(function(idx, el) { 
+    var id=el.id;
+    var description_id="description_"+id;
+    var unit_id="unit_"+id;
+    var qte_id="qte_"+id;
+    var puht_id="puht_"+id;
+
+    if (document.getElementById(description_id)==null){
+      desc="";
+    }
+    else{
+      desc=document.getElementById(description_id).value;
+    }
+    if (document.getElementById(unit_id)==null){
+      uni="";
+    }
+    else{
+      uni=document.getElementById(unit_id).value;
+    }
+    if (document.getElementById(qte_id)==null){
+      qte="";
+    }
+    else{
+      qte=document.getElementById(qte_id).value.replace(",", ".");
+    }
+    if (document.getElementById(puht_id)==null){
+      puht="";
+    }
+    else{
+      puht=document.getElementById(puht_id).value.replace(",", ".");
+    }
+    var sublist=[desc,uni,qte,puht];
+    list.push(sublist);
+  });
+
+        var request=$.ajax({
+        url: url_up,
+        type: "PUT",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {q_param: {
+                 title: title, 
+                 total: total,
+                 list: list,
+                 client: idclient,
+                 tax_rate: tax_rate,
+                 q_send: q_send,
+                 comment: comment
+               }}
+        });
+
+if (num_function==0){request.done(goBack());}
+if (num_function==2){request.done(goSend(id));}
+
+    
+}
+
+
+function goBack() {
+ // window.location.replace("/invoices");
+ alert("Devis sauvegardé");
+}
+function goVisu(id) {
+ var url="/visu_pdf/quote_visu."+id
+window.open(
+  url,
+  '_blank'
+);
+}
+function goSend(id) {
+var id=id;
+var email_to;
+var email_object;
+var email_body;
+var attachement=false;
+
+
+if (document.getElementById("email_to")==null){
+  email_to="";
+}
+else{
+  email_to=document.getElementById("email_to").value;
+}
+if (document.getElementById("email_object")==null){
+  email_object="";
+}
+else{
+  email_object=document.getElementById("email_object").value;
+}
+if (document.getElementById("email_body")==null){
+  email_body="";
+}
+else{
+  email_body=document.getElementById("email_body").value;
+}
+if (document.getElementById("attachement")==null){
+  attachement=false;
+}
+else{
+  attachement=document.getElementById("attachement").checked;
+}
+var url_send= "/visu_pdf/invoice_send";  
+var request=$.ajax({
+url: url_send,
+type: "PUT",
+beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+data: {m_param: {
+         email_object: email_object, 
+         email_to: email_to,
+         email_body: email_body,
+         id: id,
+         attachement: attachement
+       }}
+});
+
+request.done(finishSend(id));
+}
+
+function finishSend(id){
+  alert("Devis envoyé");
+  var url_show;
+  url_show="/invoices/"+id;
+ window.location.replace(url_show);
+}
+
+
+function invoiceSaveback(id){
+invoiceUpdate(id,0);
+}
+
+function invoiceVisu(id){
+goVisu(id)
+}
+
+function invoiceSend(id){
+invoiceUpdate(id,2);
+}
+
+function is_float(mixed_var) {
+  return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
+}
+
+
+
+</script>
+
+<!-- <div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div> -->
+
+
+

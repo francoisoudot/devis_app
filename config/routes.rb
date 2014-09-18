@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   get '/modify_client' => 'application#modify_client'
   get '/visu_pdf/quote_visu' => 'visu_pdf#quote_visu'
   put '/visu_pdf/quote_send' => 'visu_pdf#quote_send'
+  get '/quotes/:id/invoice' => 'quotes#invoice'
+  put '/quotes/:id/status' => 'quotes#status'
+
   root 'quotes#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

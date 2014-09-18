@@ -2,6 +2,7 @@ class CreateQuotes < ActiveRecord::Migration
   def change
     create_table :quotes do |t|
       t.string :title
+      t.integer :status
       t.text :list
       t.text :comment
       # list = line in quote = [[designation,unit,qte,puht],[]]

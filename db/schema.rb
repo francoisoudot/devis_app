@@ -30,12 +30,29 @@ ActiveRecord::Schema.define(version: 20140902024423) do
   end
 
   create_table "invoices", force: true do |t|
+    t.string   "title"
+    t.text     "list"
+    t.text     "comment"
+    t.integer  "quote_id"
+    t.decimal  "total"
+    t.decimal  "tax_rate"
+    t.decimal  "discount"
+    t.decimal  "total_paid"
+    t.datetime "starttime"
+    t.datetime "endtime"
+    t.integer  "client_id"
+    t.string   "res1"
+    t.string   "res2"
+    t.string   "res3"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "invoices", ["client_id"], name: "index_invoices_on_client_id"
+
   create_table "quotes", force: true do |t|
     t.string   "title"
+    t.integer  "status"
     t.text     "list"
     t.text     "comment"
     t.decimal  "total"

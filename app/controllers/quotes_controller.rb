@@ -58,13 +58,29 @@ class QuotesController < ApplicationController
     end
   end
 
+  def status
+  @quote = Quote.find(params[:id])
+  @quote.update({:status=>params['q_param']['status'].to_d})
+  end
+
+  def invoice
+    q = Quote.find(params[:id])
+    c = Client.find(q.client_id)
+    @invoice=c.invoices.create(:title=>q.title,:total=>q.total,:list=>q.list,:tax_rate=>q.tax_rate,:comment=>q.comment, :quote_id=>q.id)
+    respond_to do |format|
+      format.html { redirect_to @invoice }
+      format.json { head :no_content }
+    end
+  end
+
+
   # POST /quotes
   # POST /quotes.json
 def create
   @client=Client.find_by_id(params['q_param']['client'])
   title=params['q_param']['title']
   comment=params['q_param']['comment']
-  quote_p={:title=>title,:comment=>comment}
+  quote_p={:title=>title,:comment=>comment, :status=>1}
   @quote = @client.quotes.create(quote_p)
   render json:  {:quote_id=>@quote.id}
 
@@ -97,7 +113,6 @@ end
     end
    quote_p={:title=>title,:total=>total,:list=>list,:tax_rate=>tax_rate,:comment=>comment}
    @quote.update(quote_p)
-   send_quote (@quote)
 
   # respond_to do |format|
   #   if @quote.update(quote_p)
