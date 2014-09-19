@@ -103,7 +103,6 @@ end
     l.keys.each do |j|
       list << [l[j][0],l[j][1],l[j][2],l[j][3]]
     end
-    binding.pry
    invoice={:title=>title,:total=>total,:list=>list,:tax_rate=>tax_rate,:comment=>comment}
    @invoice.update(invoice)
    format.json { head :no_content }
