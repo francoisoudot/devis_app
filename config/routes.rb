@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   put '/visu_pdf/quote_send' => 'visu_pdf#quote_send'
   get '/quotes/:id/invoice' => 'quotes#invoice'
   put '/quotes/:id/status' => 'quotes#status'
+  get '/new_invoice' => 'invoices#new_invoice'
 
   root 'quotes#index'
 

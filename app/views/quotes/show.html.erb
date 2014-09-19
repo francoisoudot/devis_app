@@ -238,10 +238,10 @@
               <div class='col-sm-4'>
                 <div class='text-center'>
                  Devis envoyé <%= 
-                  if @quote.res2==nil || @quote.res2==""
+                  if @quote.email_count==nil || @quote.email_count==""
                   "0" 
                   else 
-                   @quote.res2
+                   @quote.email_count
                    end %> fois
 
                 </div>

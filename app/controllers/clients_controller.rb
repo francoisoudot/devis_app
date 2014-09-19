@@ -77,6 +77,6 @@ class ClientsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params      
       params[:client].merge!({'ln_fl' => params[:client][:last_name][0].downcase})
-      params[:client].permit(:last_name, :first_name, :email, :address, :postal_code, :phone, :city,:ln_fl,:res1)
+      params[:client].permit(:last_name, :first_name, :email, :address, :postal_code, :phone, :city,:ln_fl,:company)
     end
 end

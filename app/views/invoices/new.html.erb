@@ -1,5 +1,227 @@
-<h1>New invoice</h1>
 
-<%= render 'form' %>
+<div id="notice"><%= notice %></div> 
 
-<%= link_to 'Back', invoices_path %>
+
+<div id='orders'>
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <h1 class='pull-left'>
+        <i class='icon-inbox'></i>
+        <span>Nouvelle facture </span>
+      </h1>
+    </div>
+	  <div class='col-sm-12'>
+      <h3>1. Choisir le client</h3>
+    <div class='row' id='detail'>
+      <div class='col-sm-12'>
+        <div class='box'>
+          <div class='box-content'>
+	          <div class='row' >
+	          	<div class='col-sm-6'>
+			          <div class='clearfix' id='slider'>
+				          <div class='slider-content'>
+				            <ul class='list-unstyled'>
+				              <% @alpha.each do |car| %>
+				                <% if @clients.where(ln_fl: car)!=[] %>
+				                  <li id="<%=car%>">
+				                    <a class='title' name="<%=car%>"><%=car.upcase%></a>
+				                    <ul class='list-unstyled'>
+				                      <% @clients.where(ln_fl: car).sort_by{ |m| m.last_name.downcase}.each do |client| %>
+				                        <li>
+				                          <a href='#' onclick="clientShow(<%= client.id %>);return false;"> <%= client.last_name %> <%= client.first_name %></a>
+				                        </li>
+				                      <% end %>
+				                    </ul>
+				                  </li>
+				                <% end %>
+				              <% end %>
+				            </ul>
+				          </div>
+			          </div>
+			        </div>
+						  <div class='col-sm-6'>
+				        <div class='pull-right'>
+                  <%= link_to 'Nouveau Client', new_client_path %>
+				        </div>
+				        <div class='lead'>
+				          <i class='icon-user contrast'></i>
+				          Contact client
+				        </div>
+				        <address>
+				          <strong><div id='full_name'></div></strong>
+                  <div id='company'></div>
+				          <a href='mailto:#' id='email'></a>
+				        </address>
+				        <div class='lead'>
+				          <i class='icon-envelope contrast'></i>
+				          Addresse client
+				        </div>
+				        <address>
+				          <strong><div id='full_name'></div></strong>
+				          <div id='address'></div>
+				          <div id='city'></div>
+				          <div id='phone'></div>
+				        </address>
+						      </div>
+						    </div>
+              </div>
+            </div>
+
+       <h3>2. Informations générales sur la facture</h3>
+
+      <div class="box-content box-no-padding">
+        <div class='box'>
+          <div class='box-content'>
+            <div class='form-group'>
+              <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+              <label for='q_title'>Titre de la facture</label>
+              <input class='form-control' id='q_title' placeholder='Titre de la facture' type='text' value=''>
+            </div>
+            <div class='form-group'>
+              <label for='q_comment'>Commentaire sur la facture</label>
+              <textarea class='form-control' id='q_comment' placeholder="Commentaire pour la facture" rows='7'></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            
+          </div>
+            <hr class='hr-normal'>
+            <div>
+              <span>
+                <div class='text-right'>
+                  <a class='btn btn-success' onclick="invoiceNext(); return false;">Suivant</a>
+                </div>
+              </span>                  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  $( document ).ready(function() {
+    $("#nav_invoice").toggleClass('active');
+});
+
+var idclient;
+var data=0;
+var request;
+
+function clientShow(id){
+	idclient=id;
+  $( "#full_name" ).empty();
+  $( "#email" ).empty();
+  $("#email").attr("href", "#");
+  $( "#address" ).empty();
+  $( "#city" ).empty();
+  $( "#phone" ).empty();
+  $("#editClient").attr("href", "#");
+  $( "#editClient" ).empty();
+  $("#deleteClient").attr("href", "#");
+  $( "#deleteClient" ).empty();
+ $( "#company" ).empty();
+
+
+
+  var url_client_up="/clients/"+id+"/edit";
+  var url_up="/clients/"+id+".json";
+  var url_del="/clients/"+id;
+
+  var request=$.get( url_up, function( data ) {
+  $( "#full_name" ).append( "" + capitaliseFirstLetter(data.client.last_name) + " " + capitaliseFirstLetter(data.client.first_name) );
+ $( "#company" ).append( "" + capitaliseFirstLetter(data.client.company) );
+
+  $( "#email" ).append( "" + data.client.email );
+  $( "#email" ).attr("href", "mailto:"+data.client.email );
+  $( "#address" ).append( "" + data.client.address );
+  $( "#city" ).append( "" +data.client.postal_code + " " + capitaliseFirstLetter(data.client.city) );
+  $( "#phone" ).append( "" + data.client.phone );
+  $("#editClient").attr("href", url_client_up);
+  $( "#editClient" ).append( "Editer client" );
+  $("#deleteClient").attr("href", url_del);
+  $( "#deleteClient" ).append( "Supprimer client" );
+
+}, "json" );
+
+}
+
+
+function capitaliseFirstLetter(string)
+{
+  if (string==null){
+    return ""
+  }
+  else{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+}
+
+function invoiceCreate(num_function){
+	if (idclient==undefined || idclient==null) {
+            alert('Merci de choisir un client');
+            return false;
+  }
+  event.preventDefault();
+  var url_up="/invoices"
+  var title=document.getElementById("q_title").value;
+  var comment=document.getElementById("q_comment").value;
+
+        request=$.ajax({
+        url: url_up,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {q_param: {
+                 title: title, 
+                 comment: comment,
+                 client: idclient,
+               }},
+        success: function(data, textStatus, jqXHR) {
+                  // if (num_function==0){request.done(goBack());}
+                  // if (num_function==1){request.done(goShow(data.invoice_id));}
+                  // return false;
+                  request.done(goShow(data.invoice_id));
+                  // if (num_function==0){request.done(goBack());}
+                },
+        dataType: "json"
+        });
+    return true;
+}
+
+
+// function goBack() {
+//  window.location.replace("/invoices");
+// }
+
+function goShow(invoice_id) {
+var url_show;
+url_show="/invoices/"+invoice_id;
+// var url_visu="/visu_pdf/invoice_visu."+invoice_id
+// window.location.replace(url_show);
+ window.location.replace(url_show);
+return true;
+}
+// function setData(data){
+//   data=data;
+//   var url_visu="/visu_pdf/invoice_visu."+data;
+//   // window.location.replace(url_show);
+//   window.open(url_visu, '_blank');
+//   return true;
+// }
+
+function invoiceNext(){
+invoiceCreate(0);
+}
+
+// function invoiceVisu(){
+// invoiceCreate(1);
+// }
+</script>
+
+
+
+
+

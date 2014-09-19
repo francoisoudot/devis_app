@@ -126,7 +126,7 @@ function clientShow(id){
   var request=$.get( url_up, function( data ) {
 
   $( "#full_name" ).append( "" + capitaliseFirstLetter(data.client.last_name) + " " + capitaliseFirstLetter(data.client.first_name) );
-  $( "#company" ).append( "" + capitaliseFirstLetter(data.client.res1) );
+  $( "#company" ).append( "" + capitaliseFirstLetter(data.client.company) );
   $( "#email" ).append( "" + data.client.email );
   $( "#email" ).attr("href", "mailto:"+data.client.email );
   $( "#address" ).append( "" + data.client.address );

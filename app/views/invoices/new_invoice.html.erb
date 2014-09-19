@@ -1,0 +1,164 @@
+
+<div id="notice"><%= notice %></div> 
+
+
+<div id='orders'>
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <h1 class='pull-left'>
+        <i class='icon-inbox'></i>
+        <span>Nouvelle facture </span>
+      </h1>
+    </div>
+	  <div class='col-sm-12'>
+      <h3>Choisir le devis</h3>
+    <div class='row' id='detail'>
+      <div class='col-sm-12'>
+        <div class='box'>
+          <div class='box-content'>
+	          <% @quotes.each do |quote| %>
+                <tr>
+                  <div class='col-sm-1'>
+                    <p></p>
+                    <input type="radio" name="quote_id" value="<%=quote.id%>">
+                  </div>
+                  <div class='col-sm-6'>
+                      <div class='pull-left'>
+                        <p>
+                          <%= link_to(quote) do %>
+                            <strong>#<%= quote.id %></strong>  <%= quote.title %>
+
+                          <% end %>
+                        </p>
+                        <p>
+                          <% @client=Client.find_by_id(quote.client_id) %>
+
+                            <%= link_to(clients_path) do %>
+                              <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize %>                                            
+
+                            <% end %>
+                        </p>  
+                      </div>
+                      <div class='text-right pull-right'>
+                        <h5 class='contrast price'><%= quote.total.to_d if quote.total!=nil %> €</h5>
+                        <p>
+                          <span><%= distance_of_time_in_words(Time.now, quote.created_at) %></span>
+                          <i class='icon-time'></i>
+                        </p>
+                      </div>
+                  </div>
+                  <div class='col-sm-3'>
+                   <div class='text-right pull-right'>
+                    <a href="" class='' onclick="window.open('/visu_pdf/quote_visu.<%= quote.id %>','_blank');">Visualiser</a>
+                      |
+                    <%= link_to 'Supprimer', quote, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?' } %>
+                    
+                   </div> 
+                  </div> 
+                  <div class='col-sm-2'>
+                    <p>Statut</p>
+                    <p><span class="label 
+                      <%="label-important" if quote.status==0%><%="label-warning" if quote.status==1%><%="label-success" if quote.status==2%>"><%="Devis refusé" if quote.status==0%><%="Devis en cours" if quote.status==1%><%="Devis accepté" if quote.status==2%></span></p>
+                  </div>    
+                  <div class='clearfix'></div>
+                  <hr class='hr-normal'>
+                </tr>
+              <% end %>
+
+          </div>
+        </div>
+            <hr class='hr-normal'>
+            <div>
+              <span>
+                <div class='text-right'>
+                  <a class='btn btn-success' onclick="invoiceNext(); return false;">Suivant</a>
+                </div>
+              </span>                  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+  $( document ).ready(function() {
+    $("#nav_invoice").toggleClass('active');
+});
+
+var idclient;
+var data=0;
+var request;
+
+function capitaliseFirstLetter(string)
+{
+  if (string==null){
+    return ""
+  }
+  else{
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+}
+
+function invoiceCreate(num_function){
+	if ($("input[name=quote_id]:checked").val()==undefined) {
+            alert('Merci de choisir un devis');
+            return false;
+  }
+  event.preventDefault();
+  var url_up="/invoices"
+  var quote_id=$("input[name=quote_id]:checked").val();
+
+        request=$.ajax({
+        url: url_up,
+        type: "POST",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {q_param: {
+                 quote_id: quote_id
+               }},
+        success: function(data, textStatus, jqXHR) {
+                  // if (num_function==0){request.done(goBack());}
+                  // if (num_function==1){request.done(goShow(data.invoice_id));}
+                  // return false;
+                  request.done(goShow(data.invoice_id));
+                  // if (num_function==0){request.done(goBack());}
+                },
+        dataType: "json"
+        });
+    return true;
+}
+
+
+// function goBack() {
+//  window.location.replace("/invoices");
+// }
+
+function goShow(invoice_id) {
+var url_show;
+url_show="/invoices/"+invoice_id;
+// var url_visu="/visu_pdf/invoice_visu."+invoice_id
+// window.location.replace(url_show);
+ window.location.replace(url_show);
+return true;
+}
+// function setData(data){
+//   data=data;
+//   var url_visu="/visu_pdf/invoice_visu."+data;
+//   // window.location.replace(url_show);
+//   window.open(url_visu, '_blank');
+//   return true;
+// }
+
+function invoiceNext(){
+invoiceCreate(0);
+}
+
+// function invoiceVisu(){
+// invoiceCreate(1);
+// }
+</script>
+
+
+
+
+

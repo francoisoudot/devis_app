@@ -272,7 +272,7 @@
                     %>
                 <a class="btn btn-success <%=
                   if @invoice.quote_id == nil || @invoice.quote_id==""
-                    hide
+                    "hide"
                   end%>
                   " onclick="invoiceVisu(<%=@invoice.quote_id.to_s%>); return false;">Visualiser devis</a>
                 </div>

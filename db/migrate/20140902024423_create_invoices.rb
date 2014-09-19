@@ -4,7 +4,7 @@ class CreateInvoices < ActiveRecord::Migration
       t.string :title
       t.text :list
       t.text :comment
-      t.integer :quote_id
+      t.integer :quote_id,:status
       # list = line in quote = [[designation,unit,qte,puht],[]]
       t.decimal :total, :tax_rate, :discount, :total_paid
       t.datetime :starttime, :endtime

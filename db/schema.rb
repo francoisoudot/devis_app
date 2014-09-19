@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20140902024423) do
     t.string   "postal_code"
     t.string   "city"
     t.string   "phone"
+    t.string   "company"
     t.string   "res1"
     t.string   "res2"
     t.string   "res3"
@@ -34,6 +35,7 @@ ActiveRecord::Schema.define(version: 20140902024423) do
     t.text     "list"
     t.text     "comment"
     t.integer  "quote_id"
+    t.integer  "status"
     t.decimal  "total"
     t.decimal  "tax_rate"
     t.decimal  "discount"
@@ -53,6 +55,7 @@ ActiveRecord::Schema.define(version: 20140902024423) do
   create_table "quotes", force: true do |t|
     t.string   "title"
     t.integer  "status"
+    t.integer  "email_count"
     t.text     "list"
     t.text     "comment"
     t.decimal  "total"

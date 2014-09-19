@@ -65,6 +65,7 @@ class QuotesController < ApplicationController
 
   def invoice
     q = Quote.find(params[:id])
+    q.update({:status=>2})
     c = Client.find(q.client_id)
     @invoice=c.invoices.create(:title=>q.title,:total=>q.total,:list=>q.list,:tax_rate=>q.tax_rate,:comment=>q.comment, :quote_id=>q.id)
     respond_to do |format|

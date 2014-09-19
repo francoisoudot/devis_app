@@ -10,13 +10,47 @@
       </div>
       <div class='row'>
         <div class='col-sm-12'>
-          <a class="btn btn-success btn-block btn-lg" type="button" href="/invoices/new">Nouvelle facture</a>
+          <a data-toggle="modal" class="btn btn-success btn-block btn-lg" type="button" href="#modal-new">Nouvelle facture</a>
+         <div class='modal fade' id='modal-new' tabindex='1'>
+            <div class='modal-dialog'>
+              <div class='modal-content'>
+                <div class='modal-header'>
+                  <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                  <h4 class='modal-title' id='myModalLabel'>Nouvelle facture</h4>
+                </div>
+                <div class='modal-body'>
+                  Voulez-vous faire une facture en partant d'un devis existant?
+                </div>
+                <div class='modal-footer'>
+                  <a class='btn btn-default' data-dismiss='modal' type='button' onclick='window.location.replace("invoices/new");'>Non</a>
+                  <button class='btn btn-default' data-dismiss='modal' type='button' onclick='window.location.replace("/new_invoice");'>Oui</button>
+                </div>
+              </div>
+            </div>
+          </div> 
           <p></p>
           <div class='box'>
             <div class='box-content'> 
               <% @invoices.each do |invoice| %>
+              <%
+                          if invoice.total==nil
+                          @total=0
+                          else
+                         @total=invoice.total
+                         end
+                         @tax_rate=invoice.tax_rate
+                         if @tax_rate==nil
+                           @tax_rate=0
+                         end
+                         if invoice.total_paid==nil
+                          @total_paid=0
+                          else
+                         @total_paid=invoice.total_paid
+                         end
+                          @pourc_paid=100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d)) 
+                          %>
                 <tr>
-                  <div class='col-sm-9'>
+                  <div class='col-sm-7'>
                       <div class='pull-left'>
                         <p>
                           <%= link_to(invoice) do %>
@@ -34,19 +68,25 @@
                         </p>  
                       </div>
                       <div class='text-right pull-right'>
-                        <h4 class='contrast price'><%= invoice.total.to_d if invoice.total!=nil %> €</h4>
+                        <h4 class='contrast price'><%= @total.to_d %> €</h4>
                         <p>
                           <span><%= distance_of_time_in_words(Time.now, invoice.created_at) %></span>
                           <i class='icon-time'></i>
                         </p>
                       </div>
                   </div>
-                  <div class='col-sm-3'>
+                  <div class='col-sm-4'>
+
+                    </p>
+                      <h4><%= @total_paid.to_d%> € payé </h4>
+                      </p><p>
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
+                      </div>
+                    </p>
+                  </div>
+                  <div class='col-sm-1'>
                    <div class='text-right pull-right'>
-                    <a href="" class='' onclick="window.open('/visu_pdf/invoice_visu.<%= invoice.id %>','_blank');">Visualiser</a>
-                      |
-                    <a class='' data-toggle="modal" href="#modal-facturer">Facturer</a>
-                      |  
                     <%= link_to 'Supprimer', invoice, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer cette facture?' } %>
                     
                    </div> 
@@ -55,8 +95,6 @@
                   <hr class='hr-normal'>
                 </tr>
               <% end %>
-              <div class='clearfix'></div>
-              <hr class='hr-normal'>
             </div>
             
           </div>

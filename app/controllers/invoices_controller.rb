@@ -48,7 +48,15 @@ class InvoicesController < ApplicationController
   # GET /invoices/new
   def new
     @invoice = Invoice.new
+    @clients = Client
+    @alpha=('a'..'z').to_a + ('0'..'9').to_a
   end
+
+def new_invoice
+    @quotes = Quote.where(status: 1)
+
+end
+
 
   # GET /invoices/1/edit
   def edit
@@ -57,17 +65,29 @@ class InvoicesController < ApplicationController
   # POST /invoices
   # POST /invoices.json
   def create
-    @invoice = Invoice.new(invoice_params)
-
-    respond_to do |format|
-      if @invoice.save
-        format.html { redirect_to @invoice, notice: 'Invoice was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @invoice }
-      else
-        format.html { render action: 'new' }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
-      end
+    if params['q_param']['quote_id']!=nil
+      @quote_id=params['q_param']['quote_id']
+      @quote=Quote.find(@quote_id)
+      client_id= @quote.client_id
+      list=@quote.list
+      total=@quote.total
+      tax_rate=@quote.tax_rate
+      @quote.update({:status=>2})
+      title=@quote.title
+      comment=@quote.comment
+    else 
+      client_id=params['q_param']['client']
+      @quote_id=nil
+      list=nil
+      total=nil
+      tax_rate=nil
+      title=params['q_param']['title']
+      comment=params['q_param']['comment']
     end
+    @client=Client.find_by_id(client_id)
+    invoice_p={:title=>title,:comment=>comment,:quote_id=>@quote_id,:total=>total,:list=>list,:tax_rate=>tax_rate,}
+    @invoice = @client.invoices.create(invoice_p)
+    render json:  {:invoice_id=>@invoice.id}
   end
 
   # PATCH/PUT /invoices/1
@@ -102,7 +122,7 @@ class InvoicesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
-      @invoice = Invoice.find(params[:id])
+      # @invoice = Invoice.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
