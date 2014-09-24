@@ -61,18 +61,27 @@ class QuotesController < ApplicationController
   def status
   @quote = Quote.find(params[:id])
   @quote.update({:status=>params['q_param']['status'].to_d})
+    if @quote.status == 2
+      invoice_create(@quote)
+    end
   end
 
   def invoice
     q = Quote.find(params[:id])
     q.update({:status=>2})
-    c = Client.find(q.client_id)
-    @invoice=c.invoices.create(:title=>q.title,:total=>q.total,:list=>q.list,:tax_rate=>q.tax_rate,:comment=>q.comment, :quote_id=>q.id)
+    invoice_create(q)
     respond_to do |format|
       format.html { redirect_to @invoice }
       format.json { head :no_content }
     end
   end
+
+  def invoice_create(quote)
+    q=quote
+    c = Client.find(q.client_id)
+    @invoice=c.invoices.create(:title=>q.title,:total=>q.total,:list=>q.list,:tax_rate=>q.tax_rate,:comment=>q.comment, :quote_id=>q.id)
+  end
+
 
 
   # POST /quotes

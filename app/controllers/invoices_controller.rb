@@ -55,7 +55,6 @@ class InvoicesController < ApplicationController
 
 def new_invoice
     @quotes = Quote.where(status: 1)
-
 end
 
 
@@ -94,7 +93,6 @@ end
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
-    binding.pry
   @invoice = Invoice.find(params[:id])
   title=params['q_param']['title']
   total=params['q_param']['total']
@@ -113,6 +111,7 @@ end
   # DELETE /invoices/1
   # DELETE /invoices/1.json
   def destroy
+    @invoice=Invoice.find(params[:id])
     @invoice.destroy
     respond_to do |format|
       format.html { redirect_to invoices_url }
