@@ -33,7 +33,7 @@
             <div class='box-content'> 
               <% @invoices.each do |invoice| %>
               <%
-                          if invoice.total==nil
+                        if invoice.total==nil || 
                           @total=0
                           else
                          @total=invoice.total
@@ -47,7 +47,11 @@
                           else
                          @total_paid=invoice.total_paid
                          end
+                         if @total == 0
+                          @pourc_paid=0
+                        else
                           @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i 
+                        end
                           %>
 
 
