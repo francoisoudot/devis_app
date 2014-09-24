@@ -11,6 +11,7 @@ class InvoicesController < ApplicationController
   # GET /invoices/1.json
   def show
      @invoice = Invoice.find(params[:id])
+     @sub_inv=@invoice.sub_invoices
    # @clients = Client
    # @alpha=('a'..'z').to_a + ('0'..'9').to_a
    @client= Client.find_by_id(@invoice.client_id)
@@ -42,7 +43,7 @@ class InvoicesController < ApplicationController
      if @lmax==0
       @hash={0=>["", "", "", ""]}
     end
-    @pourc_paid=100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))
+    @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
   end
 
   # GET /invoices/new
@@ -93,6 +94,7 @@ end
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
+    binding.pry
   @invoice = Invoice.find(params[:id])
   title=params['q_param']['title']
   total=params['q_param']['total']

@@ -29,6 +29,204 @@
       <div class='col-sm-12'>
         <div class='box'>
           <div class='box-content'>
+          <div class='col-sm-12'>
+
+            <a data-toggle="modal" class="btn btn-success btn-block" type="button" href="#modal-new">Nouvelle facture</a>
+            <hr class='hr-normal'>
+
+            <div class='modal fade' id='modal-new' tabindex='1'>
+                      <div class='modal-dialog'>
+                        <div class='modal-content'>
+                          <div class='modal-header'>
+                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                            <h4 class='modal-title' id='myModalLabel'>Nouvelle facture pour la prestation <%= @invoice.title %></h4>
+                          </div>
+                          <div class='modal-body'>
+                            <div class='row'>
+                                  <div class='col-sm-12'></div>
+                                  <div class="form-group">
+                                    <div class="col-md-4">Titre de la facture</div>
+                                    <div class="col-md-8">
+                                      <input class="form-control" id="sub_inv_title" placeholder="" type="text" value="<%= @invoice.title %>">
+                                    </div>
+                                  </div>
+                                </div>
+                                <p></p>
+                            <div class='row'>
+                              <div class='col-sm-6'>
+                              Reste dû <%= @total.to_d-@total_paid.to_d%> € sur <%= @total.to_d%> €
+                              </div>
+                              <div class='col-sm-6'>
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
+                                </div>
+                              </div>
+
+    <!--                             <div class='checkbox'>
+                                <label>
+                                      <input type='checkbox' id="attachement">
+    Tout facturer               </label>
+                                </div> -->
+                                <div class='row'>
+                                  <div class='col-sm-12'></div>
+                                  <div class="form-group">
+                                    <div class="col-md-2 ">Montant</div>
+                                    <div class="col-md-2">
+                                      <input class="form-control" id="sub_inv_amount" placeholder="" type="text">
+                                    </div>
+                                    <div class="col-md-8" class='text-left'> euros
+                                    </div>
+
+                                  </div>
+                                </div>
+                                <div class='row'>
+                                  <div class='col-sm-12'></div>                                
+                                  <div class="form-group">
+                                  <div class="col-md-2 ">Echeance</div>
+                                  <div class="col-md-2">
+                                    <input class="form-control" id="sub_inv_echeance" placeholder="" type="text" value="30">
+                                  </div>
+                                  
+                                  <div class="col-md-8" class='text-left'> jours
+                                  </div>
+                                </div>
+                                </div>
+                                <div class='form-group'>
+                                  <label for='sub_inv_comment'>Commentaire</label>
+                                  <textarea class='form-control' id='sub_inv_comment' placeholder='Commentaire de la facture' rows='7'></textarea>
+                                </div>
+                            </div>
+
+                          </div>
+                          <div class='modal-footer'>
+                            <button class='btn btn-warning' data-dismiss='modal' type='button'>Fermer sans enregistrer</button>
+                            <button class='btn btn-default' data-dismiss='modal' type='button' onclick="sub_invSave(<%= @invoice.id %>);">Sauvegarder</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+            <div class='row' id='sub_invoice' <%=
+                  if @sub_inv == []
+                    "hide"
+                  end%>>
+            <h4>Liste des factures</h4>
+            <div class="box-content box-no-padding">
+              <div class="responsive-table">
+                <div class="scrollable-area">
+                  <div class='clearfix'></div>
+                  <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+                    <tbody>
+                       <% @sub_inv.each do |k| %>
+                       <% if @total!=nil
+                             @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
+                           else
+                              @si_pourc_paid=0
+                            end
+                            %>
+                       <div>
+                            <tr>
+                              <td width="10%">
+                                  <div class='text-center'> 
+                                    # <%=k.id%>
+                                   </div>
+                              </td>
+                              <td width="20%"> 
+                                <a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a> 
+                              </td>
+                              <td width="10%">
+                                <%=k.endtime.strftime("%d/%m/%Y")%>
+                              </td>
+                              <td width="10%">
+                                <%=k.total.to_s%> e / <%= @si_pourc_paid %> %
+                              </td>
+                              <td width="10%">
+                                <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
+                              </td>
+                              <td width="40%">
+                                <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
+                                if k.status==2
+                                  "hide"
+                                end%>">Marquer payé | </a><a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                                if k.status != 0
+                                  "hide"
+                                end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
+                                if k.status !=1
+                                  "hide"
+                                end%>">Relancer facture | </a><a data-confirm="Are you sure?" data-method="delete" href="/sub_invoice/<%=k.id%>" rel="nofollow" class="<%=
+                                if k.status==2
+                                  "hide"
+                                end%>">Supprimer</a>
+                   <div class='modal fade' id='modal-envoyer-<%=k.id%>' tabindex='1'>
+                      <div class='modal-dialog'>
+                        <div class='modal-content'>
+                          <div class='modal-header'>
+                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                            <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= k.title %> #<%=k.id%></h4>
+                          </div>
+                          <div class='modal-body'>
+                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                              <label for='email_to'>Envoyé à</label>
+                              <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_object'>Objet</label>
+                              <input class='form-control' id='email_object' placeholder='Objet' type='text' value="<%=
+                                if k.status == 0
+                                  "Facture #"+k.id.to_s+" de l'entreprise flatty pour la prestation "+ @invoice.title
+                                else
+                                  "Relance facture "+k.id.to_s+" de l'entreprise flatty pour la prestation "+@invoice.title
+                                end%>">
+                            </div>
+                            <div class='form-group'>
+                              <label for='email_body'>Corps</label>
+                              <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+<%=
+if k.status == 0
+  "Veuillez trouver ci-joint la facture pour "+k.title
+else
+  "Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
+end%>
+
+
+En votre aimable règlement,
+
+Francois Oudot
+92 Henry street
+94114 SF
+0666666666
+email</textarea>
+                            </div>
+                            <hr class='hr-normal'>
+                            <div class='form-group'>
+                              <div class='checkbox'>
+                                <label>
+                                  <input type='checkbox' checked id="attachement">
+Envoyer la facture attachée au mail                                </label>
+                              </div>
+                            </div>
+                            </form>
+              
+                          </div>
+                          <div class='modal-footer'>
+                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="sub_invoiceSend(<%= k.id %>,<%= @invoice.id%>);">Envoyer</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                              </td>
+                            </tr>
+                          </div>
+
+                      <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <hr class='hr-normal'>
+            <h4>Liste des prestations à facturer</h4>
             <div class="box-content box-no-padding">
               <div class="responsive-table">
                 <div class="scrollable-area">
@@ -186,7 +384,7 @@
             <div class='row'>
               <div class='col-sm-11 col-md-offset-1'>
                 <div class="form-group">
-                        <label class="col-md-2 control-label" for="inputTextArea1">Commentaire pour la facture</label>
+                        <label class="col-md-2 control-label" for="qcomment">Commentaire pour la facture</label>
                         <div class="col-md-9">
                           <textarea class="form-control" id="qcomment" value="<%= @invoice.comment %>" rows="3" placeholder="Commentaire"></textarea>
                         </div>
@@ -220,43 +418,6 @@
               </div>             
             </div>
              <hr class='hr-normal'>
-
-            <div class='row'>
-              <div class='col-sm-11 col-md-offset-1'>
-                <div class='lead'>
-                  <i class='icon-time contrast'></i>
-                  Statistiques de la facture
-                </div>
-              </div>
-              <div class='col-sm-4'>
-                <div class='text-center'>
-                  Facture créé il y a <%= distance_of_time_in_words(Time.now, @invoice.created_at) %>
-                </div>
-              </div>
-              <div class='col-sm-4'>
-                <div class='text-center'>
-                   <%= 
-                  if @invoice.starttime==nil || @invoice.starttime==""
-                    "Facture pas encore envoyé"
-                  else
-                    "Dernière facture envoyée il y a "+distance_of_time_in_words(Time.now, @invoice.starttime) 
-                  end
-                  %>
-                </div>
-              </div>
-              <div class='col-sm-4'>
-                <div class='text-center'>
-                 Facture envoyée <%= 
-                  if @invoice.res2==nil || @invoice.res2==""
-                  "0" 
-                  else 
-                   @invoice.res2
-                   end %> fois
-
-                </div>
-              </div>
-
-            </div>
           </div> 
             <div class='row'>
               <div class='col-sm-12'>
@@ -280,61 +441,9 @@
               <div class='col-sm-6' >
                 <div class='text-right'>
                   <a class='btn btn-success' onclick="invoiceSaveback(<%= @invoice.id %>); return false;">Sauvegarder</a>
-                  <a class='btn btn-success' data-toggle="modal" href="#modal-envoyer">Envoyer facture</a>
+                  
                 </div>
               </div>  
-                    <div class='modal fade' id='modal-envoyer' tabindex='1'>
-                      <div class='modal-dialog'>
-                        <div class='modal-content'>
-                          <div class='modal-header'>
-                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
-                            <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= @invoice.title %></h4>
-                          </div>
-                          <div class='modal-body'>
-                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
-                              <label for='email_to'>Envoyé à</label>
-                              <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
-                            </div>
-                            <div class='form-group'>
-                              <label for='email_object'>Objet</label>
-                              <input class='form-control' id='email_object' placeholder='Objet' type='text' value="Réponse à votre demande de devis pour <%= @invoice.title %> de l'entreprise flatty">
-                            </div>
-                            <div class='form-group'>
-                              <label for='email_body'>Corps</label>
-                              <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
-
-Veuillez trouver ci-joint le devis pour <%=@invoice.title%>.
-
-Je vous remercie de l'intérêt que vous portez à notre entreprise et je reste à votre disposition pour toute question.
-
-Cordialement,
-
-Francois Oudot
-92 Henry street
-94114 SF
-0666666666
-email</textarea>
-                            </div>
-                            <hr class='hr-normal'>
-                            <div class='form-group'>
-                              <div class='checkbox'>
-                                <label>
-                                  <input type='checkbox' checked id="attachement">
-Envoyer le devis attaché au mail                                </label>
-                              </div>
-                            </div>
-                            </form>
-              
-                          </div>
-                          <div class='modal-footer'>
-                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
-                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="invoiceSend(<%= @invoice.id %>);">Envoyer</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-              
-            
           </div>
           </div>
         </div>
@@ -553,16 +662,19 @@ function invoiceUpdate(id,num_function){
                }}
         });
 
-if (num_function==0){request.done(goBack());}
+if (num_function==0){request.done(goBack(id));}
 if (num_function==2){request.done(goSend(id));}
 
     
 }
 
 
-function goBack() {
+function goBack(id) {
  // window.location.replace("/invoices");
- alert("Devis sauvegardé");
+ alert("Liste de prestation sauvegardée");
+ var url_show;
+url_show="/invoices/"+id;
+ window.location.replace(url_show);
 }
 function goVisu(id) {
  var url="/visu_pdf/quote_visu."+id
@@ -571,8 +683,8 @@ window.open(
   '_blank'
 );
 }
-function goSend(id) {
-var id=id;
+function goSend(siid,iid) {
+var siid=siid;
 var email_to;
 var email_object;
 var email_body;
@@ -603,7 +715,7 @@ if (document.getElementById("attachement")==null){
 else{
   attachement=document.getElementById("attachement").checked;
 }
-var url_send= "/visu_pdf/invoice_send";  
+var url_send= "/visu_pdf/sub_invoice_send";  
 var request=$.ajax({
 url: url_send,
 type: "PUT",
@@ -612,18 +724,18 @@ data: {m_param: {
          email_object: email_object, 
          email_to: email_to,
          email_body: email_body,
-         id: id,
+         siid: siid,
          attachement: attachement
        }}
 });
 
-request.done(finishSend(id));
+request.done(finishSend(iid));
 }
 
-function finishSend(id){
-  alert("Devis envoyé");
+function finishSend(iid){
+  alert("Facture envoyée");
   var url_show;
-  url_show="/invoices/"+id;
+  url_show="/invoices/"+iid;
  window.location.replace(url_show);
 }
 
@@ -636,14 +748,74 @@ function invoiceVisu(id){
 goVisu(id)
 }
 
-function invoiceSend(id){
-invoiceUpdate(id,2);
+function sub_invoiceSend(siid,iid){
+  goSend(siid,iid);
 }
 
 function is_float(mixed_var) {
   return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
 }
 
+function sub_invVisu(id){
+sub_invCreate(id,1);
+}
+function sub_invoiceVisu(id){
+var url="/visu_pdf/sub_invoice_visu."+id
+window.open(
+  url,
+  '_blank'
+);
+}
+function sub_invSave(id){
+sub_invCreate(id,2);
+
+}
+
+function sub_invCreate (id,num_function){
+  event.preventDefault();
+  var url_up="/sub_inv_create/"+id
+  var title=document.getElementById("sub_inv_title").value;
+  var comment=document.getElementById("sub_inv_comment").value;
+  if (document.getElementById("sub_inv_amount").value==undefined || document.getElementById("sub_inv_amount").value==""){
+    alert('Merci de vérifier le montant à facturer');
+            return false;
+  }
+  else{
+      var sub_inv_amount=document.getElementById("sub_inv_amount").value;
+  }
+  if (document.getElementById("sub_inv_echeance").value==undefined || document.getElementById("sub_inv_echeance").value==""){
+    alert("Merci de vérifier l'échéance de la facture");
+            return false;
+  }
+  else{
+      var sub_inv_echeance=document.getElementById("sub_inv_echeance").value;
+  }
+
+        var request=$.ajax({
+        url: url_up,
+        type: "PUT",
+        beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+        data: {si_param: {
+                 title: title, 
+                 sub_inv_amount: sub_inv_amount,
+                 sub_inv_echeance: sub_inv_echeance,
+                 invoice_id: id,
+                 comment: comment
+               }}
+        });
+
+if (num_function==2){request.done(gosub_invVisu(id));}
+// if (num_function==2){request.done(goSend(id));}
+
+
+}
+
+function gosub_invVisu(id){
+  alert('Facture sauvegardée');
+  var url_show;
+  url_show="/invoices/"+id;
+ window.location.replace(url_show);
+}
 
 
 </script>

@@ -10,7 +10,7 @@
       </div>
       <div class='row'>
         <div class='col-sm-12'>
-          <a data-toggle="modal" class="btn btn-success btn-block btn-lg" type="button" href="#modal-new">Nouvelle facture</a>
+          <a data-toggle="modal" class="btn btn-success btn-block btn-lg" type="button" href="#modal-new">Nouvelle prestation à facturer</a>
          <div class='modal fade' id='modal-new' tabindex='1'>
             <div class='modal-dialog'>
               <div class='modal-content'>
@@ -47,8 +47,10 @@
                           else
                          @total_paid=invoice.total_paid
                          end
-                          @pourc_paid=100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d)) 
+                          @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i 
                           %>
+
+
                 <tr>
                   <div class='col-sm-7'>
                       <div class='pull-left'>
@@ -62,7 +64,7 @@
                           <% @client=Client.find_by_id(invoice.client_id) %>
 
                             <%= link_to(clients_path) do %>
-                              <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize %>                                            
+                              <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
 
                             <% end %>
                         </p>  

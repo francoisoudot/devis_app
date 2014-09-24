@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140902024423) do
+ActiveRecord::Schema.define(version: 20140922223806) do
 
   create_table "clients", force: true do |t|
     t.string   "email"
@@ -72,6 +72,21 @@ ActiveRecord::Schema.define(version: 20140902024423) do
   end
 
   add_index "quotes", ["client_id"], name: "index_quotes_on_client_id"
+
+  create_table "sub_invoices", force: true do |t|
+    t.string   "title"
+    t.text     "comment"
+    t.integer  "status"
+    t.integer  "echeance"
+    t.decimal  "total"
+    t.datetime "starttime"
+    t.datetime "endtime"
+    t.integer  "invoice_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sub_invoices", ["invoice_id"], name: "index_sub_invoices_on_invoice_id"
 
   create_table "users", force: true do |t|
     t.datetime "created_at"

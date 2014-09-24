@@ -35,6 +35,27 @@ def send_quote2(quote,to,obj,bod,att)
     end
   end
  
+ def send_sub_invoice(sub_invoice,to,obj,bod,att)
+    @sub_inv=sub_invoice
+    @sub_inv.update(:status => 1)
+    @invoice=Invoice.find(@sub_inv.invoice_id)
+    @client=Client.find_by_id(@invoice.client_id)    
+    mail_to=to
+    mail_object=obj
+    mail_body=bod
+    subject=mail_object
+    if att=="true"
+      pdf = SubinvoicePdf.new(@sub_inv, view_context)
+      attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+    end
+    if @client.email != nil
+      mail(from:'no-reply@whatever.net',
+            to: mail_to, 
+           subject: subject,
+           body: mail_body
+           )
+    end
+  end
 
 
 end
