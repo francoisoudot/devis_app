@@ -132,7 +132,7 @@ class SubinvoicePdf < Prawn::Document
   def invoice_cond
     move_down 50
     if @comment !=""
-      text "Commentaire sur le devis:",:indent_paragraphs => 40, :size => 8
+      text "Commentaire sur la facture:",:indent_paragraphs => 40, :size => 8
       text @comment,:indent_paragraphs => 40, :size => 8
       move_down 20
     end

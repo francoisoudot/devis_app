@@ -19,7 +19,7 @@
                       <div class='pull-left'>
                         <p>
                           <%= link_to(quote) do %>
-                            <strong>#<%= quote.id %></strong>  <%= quote.title %>
+                            <h4>#<%= quote.id %>  <%= quote.title %> </h4>
 
                           <% end %>
                         </p>
@@ -51,7 +51,6 @@
                    </div> 
                   </div> 
                   <div class='col-sm-2'>
-                    <p>Statut</p>
                     <p><a data-toggle="modal" href="#modal-status_<%=quote.id%>"><span class="label 
                       <%="label-important" if quote.status==0%><%="label-warning" if quote.status==1%><%="label-success" if quote.status==2%>"><%="Devis refusé" if quote.status==0%><%="Devis en cours" if quote.status==1%><%="Devis accepté" if quote.status==2%></span></a></p>
                   </div>   

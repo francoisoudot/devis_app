@@ -31,7 +31,7 @@
           <div class='box-content'>
           <div class='col-sm-12'>
 
-            <a data-toggle="modal" class="btn btn-success btn-block" type="button" href="#modal-new">Nouvelle facture</a>
+            <a data-toggle="modal" class="btn btn-success btn-block btn-lg" type="button" href="#modal-new">Nouvelle facture</a>
             <hr class='hr-normal'>
 
             <div class='modal fade' id='modal-new' tabindex='1'>
@@ -109,7 +109,7 @@
                   if @sub_inv == []
                     "hide"
                   end%>>
-            <h4>Liste des factures</h4>
+            <h4>Liste des factures émises pour ces prestations</h4>
             <div class="box-content box-no-padding">
               <div class="responsive-table">
                 <div class="scrollable-area">
@@ -182,7 +182,7 @@
                               <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
 <%=
 if k.status == 0
-  "Veuillez trouver ci-joint la facture pour "+k.title
+  "Veuillez trouver ci-joint le facture de "+k.total+" euros pour la prestation de "+@invoice.title+". Dans l'attente de votre aimable règlement, je reste à votre disposition pour toute information complémentaire."
 else
   "Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
 end%>

@@ -16,7 +16,7 @@
               <div class='modal-content'>
                 <div class='modal-header'>
                   <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
-                  <h4 class='modal-title' id='myModalLabel'>Nouvelle facture</h4>
+                  <h4 class='modal-title' id='myModalLabel'>Générer une facture pour une prestation</h4>
                 </div>
                 <div class='modal-body'>
                   Voulez-vous faire une facture en partant d'un devis existant?
@@ -33,7 +33,7 @@
             <div class='box-content'> 
               <% @invoices.each do |invoice| %>
               <%
-                        if invoice.total==nil || 
+                        if invoice.total==nil 
                           @total=0
                           else
                          @total=invoice.total
@@ -60,7 +60,7 @@
                       <div class='pull-left'>
                         <p>
                           <%= link_to(invoice) do %>
-                            <strong>#<%= invoice.id %></strong>  <%= invoice.title %>
+                            <h4>#<%= invoice.id %> <%= invoice.title %></h4>
 
                           <% end %>
                         </p>

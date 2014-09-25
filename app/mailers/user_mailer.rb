@@ -10,7 +10,9 @@ class UserMailer < ActionMailer::Base
     pdf = QuotePdf.new(@quote, view_context)
     attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
   	if @client.email != nil
-    	mail(to: @client.email, 
+    	mail(to: @client.email,
+            from: 'no-reply@whatever.net', 
+            cc: "alexis.bidinot@gmail.com",
            subject: subject
            )
     end
@@ -27,8 +29,9 @@ def send_quote2(quote,to,obj,bod,att)
       attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
     end
     if @client.email != nil
-      mail(from:'no-reply@whatever.net',
-            to: mail_to, 
+      mail(to: mail_to, 
+           from: 'no-reply@whatever.net', 
+           cc: "alexis.bidinot@gmail.com",
            subject: subject,
            body: mail_body
            )
@@ -49,8 +52,9 @@ def send_quote2(quote,to,obj,bod,att)
       attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
     end
     if @client.email != nil
-      mail(from:'no-reply@whatever.net',
-            to: mail_to, 
+      mail(to: mail_to, 
+           from: 'no-reply@whatever.net', 
+           cc: "alexis.bidinot@gmail.com",
            subject: subject,
            body: mail_body
            )

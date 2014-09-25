@@ -90,7 +90,8 @@ def create
   @client=Client.find_by_id(params['q_param']['client'])
   title=params['q_param']['title']
   comment=params['q_param']['comment']
-  quote_p={:title=>title,:comment=>comment, :status=>1}
+  list = [["","","1",""]]
+  quote_p={:title=>title,:comment=>comment, :status=>1, :list=>list}
   @quote = @client.quotes.create(quote_p)
   render json:  {:quote_id=>@quote.id}
 
