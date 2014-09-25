@@ -5,13 +5,14 @@ class InvoicesController < ApplicationController
   # GET /invoices.json
   def index
     @invoices = Invoice.all
+   @sub_inv=SubInvoice.order("endtime")
   end
 
   # GET /invoices/1
   # GET /invoices/1.json
   def show
      @invoice = Invoice.find(params[:id])
-     @sub_inv=@invoice.sub_invoices
+     @sub_inv=@invoice.sub_invoices.order("endtime")
    # @clients = Client
    # @alpha=('a'..'z').to_a + ('0'..'9').to_a
    @client= Client.find_by_id(@invoice.client_id)
