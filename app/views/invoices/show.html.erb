@@ -146,7 +146,11 @@
                                 <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
                                 if k.status==2
                                   "hide"
-                                end%>">Marquer payé | </a><a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                                end%>">Marquer payé | </a>
+                                <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
+                                if k.status!=2
+                                  "hide"
+                                end%>">Repasser en non payée</a><a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
                                 if k.status != 0
                                   "hide"
                                 end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
@@ -378,10 +382,10 @@ Envoyer la facture attachée au mail                                </label>
 
 
 
-            <hr class='hr-normal'>
+            <hr class='hr-normal hide'>
 
 
-            <div class='row'>
+            <div class='row hide'>
               <div class='col-sm-11 col-md-offset-1'>
                 <div class="form-group">
                         <label class="col-md-2 control-label" for="qcomment">Commentaire pour la facture</label>

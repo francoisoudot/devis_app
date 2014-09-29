@@ -79,7 +79,13 @@ class SubinvoicePdf < Prawn::Document
     :indent_paragraphs => 40  
     text "Objet: #{@sub_invoice.title}",
     :indent_paragraphs => 40
-
+    if @invoice.quote_id != nil 
+      @quote= Quote.find(@invoice.quote_id)
+      if @quote.starttime !=nil
+      text "Référence: devis #{@quote.title} envoyé le #{(@quote.starttime).strftime("%d/%m/%Y")}",
+      :indent_paragraphs => 40
+      end
+    end
   end
 
   def invoice_details

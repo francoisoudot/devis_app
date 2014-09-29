@@ -4,8 +4,74 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.json
   def index
+
+   @order=params[:order].to_i
+   @tab=params[:tab].to_i
+   if @tab==0 && @order==0
+     @invoices = Invoice.all
+     @sub_inv=SubInvoice.order("endtime")
+     @tab1=""
+     @tab2="active"
+   elsif @tab==1
+    @tab1="active"
+    @tab2=""
+    @sub_inv=SubInvoice.order("endtime")
+    if @order==1
+      @invoices=Invoice.order(title: :asc).all
+    elsif @order==2
+      @invoices=Invoice.order(title: :desc).all
+    elsif @order==3
+      @invoices=Invoice.joins("left join clients on invoices.client_id = clients.id").order("clients.last_name DESC")
+    elsif @order==4
+      @invoices=Invoice.joins("left join clients on invoices.client_id = clients.id").order("clients.last_name DESC")
+    elsif @order==5
+      @invoices=Invoice.order(total: :asc).all
+    elsif @order==6
+      @invoices=Invoice.order(total: :desc).all
+    elsif @order==7
+      @invoices=Invoice.order(created_at: :desc).all
+    elsif @order==8
+      @invoices=Invoice.order(created_at: :asc).all
+    elsif @order==9
+      @invoices=Invoice.order(total_paid: :asc).all
+    elsif @order==10
+      @invoices=Invoice.order(total_paid: :desc).all
+    elsif @order==11
+      @invoices=Invoice.order("invoices.total_paid/(invoices.total*(1+invoices.tax_rate)) ASC")
+    elsif @order==12
+      @invoices=Invoice.order("invoices.total_paid/(invoices.total*(1+invoices.tax_rate)) DESC")
+    end
+    
+   else
+    @tab1=""
+    @tab2="active"
     @invoices = Invoice.all
-   @sub_inv=SubInvoice.order("endtime")
+    if @order==1
+      @sub_inv=SubInvoice.order(id: :asc).all
+    elsif @order==2
+      @sub_inv=SubInvoice.order(id: :desc).all
+    elsif @order==3
+      @sub_inv=SubInvoice.order(title: :asc).all
+    elsif @order==4
+      @sub_inv=SubInvoice.order(title: :desc).all
+    elsif @order==5
+      @sub_inv=SubInvoice.order(endtime: :asc).all
+    elsif @order==6
+      @sub_inv=SubInvoice.order(endtime: :desc).all
+    elsif @order==7
+      @sub_inv=SubInvoice.order(total: :asc).all
+    elsif @order==8
+      @sub_inv=SubInvoice.order(total: :desc).all
+    elsif @order==9
+      @sub_inv=SubInvoice.order(status: :asc).all
+    elsif @order==10
+      @sub_inv=SubInvoice.order(status: :desc).all
+    elsif @order==11
+      @sub_inv=SubInvoice.joins("left join invoices on sub_invoices.invoice_id=invoices.id").joins("left join clients on invoices.client_id = clients.id").order("clients.last_name ASC")
+    elsif @order==12
+      @sub_inv=SubInvoice.joins("left join invoices on sub_invoices.invoice_id=invoices.id").joins("left join clients on invoices.client_id = clients.id").order("clients.last_name DESC")
+    end
+   end
   end
 
   # GET /invoices/1
@@ -44,7 +110,11 @@ class InvoicesController < ApplicationController
      if @lmax==0
       @hash={0=>["", "", "", ""]}
     end
-    @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
+    if @total == 0
+      @pourc_paid=0
+    else
+      @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i 
+    end
   end
 
   # GET /invoices/new

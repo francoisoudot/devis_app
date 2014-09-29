@@ -16,6 +16,7 @@
 //= require flatty/jquery/jquery-ui.min
 //= require flatty/bootstrap/bootstrap.min
 //= require flatty/plugins/plugins
+//= require flatty/plugins/bootstrap_hover_dropdown/twitter-bootstrap-hover-dropdown.min
 //= require flatty/theme
 //= require jquery
 //= require jquery_ujs

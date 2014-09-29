@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/new_invoice' => 'invoices#new_invoice'
   put '/sub_inv_create/:id' => 'sub_invoice#create'
   put 'sub_invoice_mark_paid/:id' => 'sub_invoice#mark_paid'
+  put 'sub_invoice_mark_unpaid/:id' => 'sub_invoice#mark_unpaid'
   delete '/sub_invoice/:id' => 'sub_invoice#delete'
  get '/visu_pdf/sub_invoice_visu' => 'visu_pdf#sub_invoice_visu'
   

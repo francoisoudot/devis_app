@@ -13,6 +13,34 @@
           <p></p>
           <div class='box'>
             <div class='box-content'> 
+                    <div class='row'>
+
+              <div class='col-sm-7'>
+                <div class='pull-left'>
+                  
+                  <p><h4>Titre du devis <a href="/quotes?order=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=2"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Nom client <a href="/quotes?order=3"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=4"><i class="icon-sort-by-alphabet-alt"></i></a>
+                  
+               </div>
+
+               <div class='pull-right'>
+                  
+                  <p><h4>Montant <a href="/quotes?order=5"><i class="icon-sort-by-order"></i></a> <a href="/quotes?order=6"><i class="icon-sort-by-order-alt"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Date de création <a href="/quotes?order=7"><i class="icon-sort-by-order"></i></a> <a href="/quotes?order=8"><i class="icon-sort-by-order-alt"></i></a>
+                  
+               </div>
+             </div>
+             <div class='col-sm-3'>
+             </div>
+             <div class='col-sm-2'>
+              <p><h4>Statut <a href="/quotes?order=9"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=10"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
+             </div>
+            </div>
+
+          </div>
+        </div>
+          <div class='box'>
+            <div class='box-content'> 
               <% @quotes.each do |quote| %>
                 <tr>
                   <div class='col-sm-7'>
@@ -33,7 +61,14 @@
                         </p>  
                       </div>
                       <div class='text-right pull-right'>
-                        <h4 class='contrast price'><%= quote.total.to_d if quote.total!=nil %> €</h4>
+
+                        <% 
+                        @tax_rate=quote.tax_rate
+                        if @tax_rate==nil
+                          @tax_rate=0
+                        end 
+                        %>
+                        <h4 class='contrast price'><%= quote.total.to_d*(1+@tax_rate.to_d) if quote.total!=nil %> € TTC</h4>
                         <p>
                           <span><%= distance_of_time_in_words(Time.now, quote.created_at) %></span>
                           <i class='icon-time'></i>

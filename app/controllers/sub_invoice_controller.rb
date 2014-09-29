@@ -50,4 +50,21 @@ end
     end
   end
 
+    def mark_unpaid
+  	@sub_invoice=SubInvoice.find(params[:id])
+  	amount=@sub_invoice.total
+  	@invoice=Invoice.find(@sub_invoice.invoice_id)
+  	if @invoice.total_paid==nil
+		new_total=0
+	else
+		new_total=@invoice.total_paid.to_d-amount.to_d
+	end
+  	@invoice.update(:total_paid => new_total)
+  	@sub_invoice.update(:status => 1)
+  	respond_to do |format|
+      format.html { redirect_to invoice_url(@invoice) }
+      format.json { head :no_content }
+    end
+  end
+
 end

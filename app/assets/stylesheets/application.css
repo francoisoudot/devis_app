@@ -11,6 +11,8 @@
  *= flatty/theme-colors
  *= flatty/bootstrap/bootstrap
  *= flatty/plugins/plugins
+ *= flatty/plugins/light-theme
+ *= flatty/plugins/bootstrap_datetimepicker/bootstrap-datetimepicker
  *= flatty/jquery/jquery_ui
  *= flatty/light-theme
  *= require_self

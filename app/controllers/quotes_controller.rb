@@ -6,12 +6,37 @@ class QuotesController < ApplicationController
   # GET /quotes.json
 
   def index
-    @quotes = Quote.all
+    @order=params[:order].to_i
+    if @order==1
+      @quotes=Quote.order(title: :asc).all
+    elsif @order==2
+      @quotes=Quote.order(title: :desc).all
+    elsif @order==3
+      @quotes=Quote.joins("left join clients on quotes.client_id = clients.id").order("clients.last_name ASC")
+    elsif @order==4
+      @quotes=Quote.joins("left join clients on quotes.client_id = clients.id").order("clients.last_name DESC")
+    elsif @order==5
+      @quotes=Quote.order(total: :asc).all
+    elsif @order==6
+      @quotes=Quote.order(total: :desc).all
+    elsif @order==7
+      @quotes=Quote.order(created_at: :desc).all
+    elsif @order==8
+      @quotes=Quote.order(created_at: :asc).all
+    elsif @order==9
+      @quotes=Quote.order(status: :desc).all
+    elsif @order==10
+      @quotes=Quote.order(status: :asc).all
+
+    else
+      @quotes = Quote.all
+    end
   end
 
   # GET /quotes/1
   # GET /quotes/1.json
   def show
+
    @quote = Quote.find(params[:id])
    # @clients = Client
    # @alpha=('a'..'z').to_a + ('0'..'9').to_a

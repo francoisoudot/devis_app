@@ -33,21 +33,50 @@
             <div class='box-content'> 
               <div class="tabbable">
                 <ul class="nav nav-tabs nav-tabs-centered">
-                  <li class="active" id="presta">
+                  <li class="<%=@tab1%>">
                     <a data-toggle="tab" href="#tabcenter1">
                       <i class="icon-money"></i>
                       Liste des prestations à facturer
                     </a>
                   </li>
-                  <li class="">
+                  <li class="<%=@tab2%>">
                     <a data-toggle="tab" href="#tabcenter2">
                       <i class="icon-edit"></i>
-                      Liste des factures créées
+                      Liste des factures en cours
                     </a>
                   </li>
                 </ul>
                 <div class="tab-content">
-                  <div class="tab-pane active" id="tabcenter1">
+                  <div class="tab-pane <%=@tab1%>" id="tabcenter1">
+                              <div class='box'>
+            <div class='box-content'> 
+                    <div class='row'>
+
+              <div class='col-sm-7'>
+                <div class='pull-left'>
+                  
+                  <p><h4>Titre du devis <a href="/invoices?order=1&tab=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=2&tab=1"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Nom client <a href="/invoices?order=3&tab=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=4&tab=1"><i class="icon-sort-by-alphabet-alt"></i></a>
+                  
+               </div>
+
+               <div class='pull-right'>
+                  
+                  <p><h4>Montant <a href="/invoices?order=5&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=6&tab=1"><i class="icon-sort-by-order-alt"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Date de création <a href="/invoices?order=7&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=8&tab=1"><i class="icon-sort-by-order-alt"></i></a>
+                  
+               </div>
+             </div>
+             <div class='col-sm-4'>
+               <p><h4>Montant payé<a href="/invoices?order=9&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=10&tab=1"><i class="icon-sort-by-order-alt"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;% payé <a href="/invoices?order=11&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=12&tab=1"><i class="icon-sort-by-order-alt"></i></a>
+             </div>
+             <div class='col-sm-1'>
+             </div>
+            </div>
+
+          </div>
+        </div>
                       <% @invoices.each do |invoice| %>
                       <%
                                 if invoice.total==nil 
@@ -91,7 +120,7 @@
                                 </p>  
                               </div>
                               <div class='text-right pull-right'>
-                                <h4 class='contrast price'><%= @total.to_d %> €</h4>
+                                <h4 class='contrast price'><%= @total.to_d*(1+@tax_rate) %> € TTC</h4>
                                 <p>
                                   <span><%= distance_of_time_in_words(Time.now, invoice.created_at) %></span>
                                   <i class='icon-time'></i>
@@ -101,7 +130,7 @@
                           <div class='col-sm-4'>
 
                             </p>
-                              <h4><%= @total_paid.to_d%> € payé </h4>
+                              <h4><%= @total_paid.to_d%> € payé TTC</h4>
                               </p><p>
                               <div class="progress">
                                 <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
@@ -119,8 +148,27 @@
                         </tr>
                       <% end %>                  
                     </div>
-                  <div class="tab-pane" id="tabcenter2">
+                  <div class="tab-pane <%=@tab2%>" id="tabcenter2">
                     <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+                    <thead>
+                      <tr>
+                        <th width="10%"># <a href="/invoices?order=1&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=2&tab=2"><i class="icon-sort-by-order-alt"></i></a></th>
+                        <th width="25%"><p>Titre du devis <a href="/invoices?order=3&tab=2"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=4&tab=2"><i class="icon-sort-by-alphabet-alt"></i></a></p>
+                        &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=12&tab=2"><i class="icon-sort-by-alphabet-alt"></i></a>
+                        </th>
+                        <th width="15%">Echéance <a href="/invoices?order=5&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=6&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                        </th>
+                        <th width="15%">
+                          % facturé <a href="/invoices?order=7&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=8&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                        </th>
+                        <th width="10%">
+                          Statut <a href="/invoices?order=9&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=10&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                        </th>
+                        <th width="25%">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
                     <tbody>
                        <% @sub_inv.each do |k| %>
                        <% 
@@ -142,22 +190,32 @@
                                    </div>
                               </td>
                               <td width="25%"> 
-                                <a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a> 
+                                <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
+                                <%= link_to(clients_path) do %>
+                                      <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+
+                                    <% end %>
                               </td>
-                              <td width="10%">
+                              <td width="15%">
                                 <%=k.endtime.strftime("%d/%m/%Y")%>
                               </td>
                               <td width="15%">
-                                <%=k.total.to_s%> e / <%= @si_pourc_paid %> %
+                                <p><%=k.total.to_s%> € TTC</p>
+                                 <%= @si_pourc_paid %> %
                               </td>
                               <td width="10%">
                                 <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
                               </td>
-                              <td width="30%">
+                              <td width="25%">
                                 <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
                                 if k.status==2
                                   "hide"
-                                end%>">Marquer payé | </a><a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                                end%>">Marquer payé | </a>
+                                <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
+                                if k.status!=2
+                                  "hide"
+                                end%>">Repasser en non payée</a>
+                                <a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
                                 if k.status != 0
                                   "hide"
                                 end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=

@@ -1,6 +1,6 @@
 class Quote < ActiveRecord::Base
 
 serialize :list
-belongs_to :customer
+belongs_to :client, :class_name => "Client"
 		
 end
