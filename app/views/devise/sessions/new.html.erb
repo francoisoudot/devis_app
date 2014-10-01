@@ -1,0 +1,69 @@
+
+  <body class='contrast-red login contrast-background'>
+    <div class='middle-container'>
+      <div class='middle-row'>
+        <div class='middle-wrapper'>
+          <div class='login-container-header'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-4 col-sm-offset-4'>
+                  <h1 class='text-center title'>Sign in</h1>
+
+
+                  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+                  <div class='form-group'>
+                    <div class='controls with-icon-over-input'>
+                    <%= f.email_field :email, autofocus: true,  class: "form-control", placeholder:"E-mail" %>
+                    <i class='icon-user text-muted'></i>
+                    </div>
+                  </div>
+                  <div class='form-group'>
+                    <div class='controls with-icon-over-input'>
+                      <%= f.password_field :password, class: "form-control", placeholder: "Mot de passe" %>
+                      <i class='icon-lock text-muted'></i>
+                    </div>
+                  </div>
+                  <p>
+                  <% if devise_mapping.rememberable? -%>
+                    <div><%= f.check_box :remember_me %> Se souvenir de moi</div>
+                  <% end -%>
+                  </p>
+                  <div><%= f.submit "Sign in", class: 'btn btn-block'%></div>
+                <% end %>
+
+                  <div class='text-center'>
+                    <hr class='hr-normal'>
+                    <%= link_to "Oubli du mot de passe?", new_password_path(resource_name) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container-footer'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+                  <div class='text-center'>
+                    <a href='/users/sign_up'>
+                      <i class='icon-user'></i>
+                      Nouveau à Devis app?
+                      <strong>Sign up</strong>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+

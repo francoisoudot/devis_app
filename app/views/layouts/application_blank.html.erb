@@ -8,6 +8,8 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+ 
+
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta content='text/html;charset=utf-8' http-equiv='content-type'>
     <meta content='Devis app' name='description'>
@@ -16,19 +18,8 @@
       <script src="assets/javascripts/ie/html5shiv.js" type="text/javascript"></script>
       <script src="assets/javascripts/ie/respond.min.js" type="text/javascript"></script>
     <![endif]-->
-
-
   </head>
 
-  <body class='contrast-red '>
-<%= render 'layouts/header' %>
-
-<%= render 'layouts/nav' %>
-    <div id='wrapper'>
-      <section id='content'>
-        <div class='container'>
-          <div class='row' id='content-wrapper'>
-            <div class='col-xs-12'>
 <% flash.each do |name, msg| %>
   <% if msg.is_a?(String) %>
     <div class="alert alert-<%= name.to_s == 'notice' ? 'success' : 'danger' %>">
@@ -36,24 +27,17 @@
       <%= content_tag :div, msg, :id => "flash_#{name}" %>
     </div>
   <% end %>
-<% end %>
-              <%= yield%>
-            </div>
-          </div>
-          <footer id='footer'>
-            <div class='footer-wrapper'>
-              <div class='row'>
-                <div class='col-sm-6 text'>
-                  Devis app
-                </div>
-              </div>
-            </div>
-          </footer>
-        </div>
-      </section>
-
-
-    </div>
-  </body>
+<% end %>     
+<%= yield%>
+<script type="text/javascript">
+$(document).ready(function() {
+  // document.getElementsByClassName("field_with_errors").className = "has_error";
+var els = [].slice.apply(document.getElementsByClassName("field_with_errors"));
+for (var i = 0; i < els.length; i++) {
+    els[i].className = els[i].className.replace(/ *\bfield_with_errors\b/g, "");
+    $(els[i]).parent().parent().addClass("has-error")
+}
+});
+</script>
 </html>
 

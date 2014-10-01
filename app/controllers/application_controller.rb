@@ -2,8 +2,9 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  layout 'application'
+layout 'application_blank'
   include ActionView::Helpers::DateHelper
+
 
 
 def modify_client

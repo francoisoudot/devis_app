@@ -1,0 +1,74 @@
+<body class='contrast-red login contrast-background'>
+    <div class='middle-container'>
+      <div class='middle-row'>
+        <div class='middle-wrapper'>
+          <div class='login-container-header'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+<!--                   <div class='text-center'>
+                    <img width="121" height="31" src="/assets/images/logo_lg.svg" />
+                  </div>
+ -->                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-4 col-sm-offset-4'>
+                  <h1 class='text-center title'>Changement du mot de passe</h1>
+                  <!-- <form accept-charset="UTF-8" action="/users/password" class="new_user" id="new_user" method="post"> -->
+				<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+				  <%= devise_error_messages! %>
+				  <%= f.hidden_field :reset_password_token %>
+
+				  <div class='form-group'>
+                      <div class='controls with-icon-over-input'>
+				    <%= f.password_field :password, autofocus: true, autocomplete: "off", placeholder: "Mot de passe", class: "form-control" %>
+  				    <i class='icon-lock text-muted'></i>
+					  </div>
+				  </div>
+
+				  <div class='form-group'>
+                      <div class='controls with-icon-over-input'>
+				    <%= f.password_field :password_confirmation, autocomplete: "off", placeholder: "Confirmation du mot de passe", class: "form-control" %>
+				    <i class='icon-lock text-muted'></i>
+				    </div>
+				  </div>
+
+				  <div><%= f.submit "Changer mon mot de passe" , class: 'btn btn-block'%></div>
+				<% end %>
+                  <div class='text-center'>
+                    <hr class='hr-normal'>
+                    
+                      <i class='icon-chevron-left'></i>
+                      <%= link_to "Je connais mon mot de passe", new_session_path(resource_name) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container-footer'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+                  <div class='text-center'>
+                    <a href='/users/sign_up'>
+                      <i class='icon-user'></i>
+                      Nouveau à Devis app?
+                      <strong>Sign up</strong>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+
+
+

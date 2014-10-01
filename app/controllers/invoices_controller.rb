@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_user!, :set_invoice, only: [:show, :edit, :update, :destroy]
+  layout 'application'
   # GET /invoices
   # GET /invoices.json
   def index

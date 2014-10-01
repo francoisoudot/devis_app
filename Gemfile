@@ -14,6 +14,9 @@ gem 'sqlite3',        group: :development
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 
+# authentication
+gem 'devise'
+
 #Prawn gem for pdf
 gem 'prawn'
 gem 'prawn-table'

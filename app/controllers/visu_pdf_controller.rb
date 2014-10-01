@@ -1,5 +1,6 @@
 class VisuPdfController < ApplicationController
-
+before_action :authenticate_user!
+layout 'application'
 def quote_visu
 	@quote=Quote.find(params[:format])
         pdf = QuotePdf.new(@quote, view_context)

@@ -1,6 +1,6 @@
 class SubInvoiceController < ApplicationController
-
-
+before_action :authenticate_user!
+layout 'application'
 def create
 	title=params['si_param']['title']
 	comment=params['si_param']['comment']

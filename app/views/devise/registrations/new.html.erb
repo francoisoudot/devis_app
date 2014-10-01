@@ -1,0 +1,77 @@
+<body class='contrast-red login contrast-background'>
+    <div class='middle-container'>
+      <div class='middle-row'>
+        <div class='middle-wrapper'>
+          <div class='login-container-header'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+<!--                   <div class='text-center'>
+                    <img width="121" height="31" src="/assets/images/logo_lg.svg" />
+                  </div>
+ -->                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-4 col-sm-offset-4'>
+                  <h1 class='text-center title'>Sign up</h1>
+                  
+                  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                    <%= devise_error_messages! %>
+                    <div class='form-group'>
+                      <div class='controls with-icon-over-input'>
+                      <%= f.email_field :email, autofocus: true, placeholder: "E-mail", class: "form-control" %>
+                      <i class='icon-user text-muted'></i>
+                      </div>
+                    </div>
+
+                    <div class='form-group'>
+                      <i>Mot de passe: 8 caractères minimum</i>
+                      <div class='controls with-icon-over-input'>
+                      <%= f.password_field :password, autocomplete: "off", placeholder: "Mot de passe", class: "form-control" %>
+                      <i class='icon-lock text-muted'></i>
+                      </div>
+                    </div>
+
+                    <div class='form-group'>
+                      <div class='controls with-icon-over-input'>
+                      <%= f.password_field :password_confirmation, autocomplete: "off", placeholder: "Confirmation du mot de passe", class: "form-control" %>
+                      <i class='icon-lock text-muted'></i>
+                      </div>
+                    </div>
+
+                    <div><%= f.submit "Sign up", class: 'btn btn-block' %></div>
+                  <% end %>
+                  
+                  <div class='text-center'>
+                    <hr class='hr-normal'>
+                    <a href='/users/sign_in'>
+                      <i class='icon-chevron-left'></i>
+                      Retour au sign in
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class='login-container-footer'>
+            <div class='container'>
+              <div class='row'>
+                <div class='col-sm-12'>
+                  <div class='text-center'>
+                    <a href='/users/password/new'>
+                      <i class='icon-lock'></i>
+                      Oubli du mot de passe?
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
