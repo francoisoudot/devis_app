@@ -14,7 +14,11 @@ end
 
 def quote_send
 @quote = Quote.find(params['m_param']['id'])
-num_sent=@quote.email_count+1
+if @quote.email_count=nil
+       num_sent=1
+else
+        num_sent=@quote.email_count+1
+end
 quote_p={:email_count=>num_sent,:starttime=>Time.now}
 @quote.update(quote_p)
 UserMailer.send_quote2(@quote,params['m_param']['email_to'],
