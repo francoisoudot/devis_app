@@ -1,6 +1,7 @@
 class VisuPdfController < ApplicationController
 before_action :authenticate_user!
 layout 'application'
+
 def quote_visu
 	@quote=Quote.find(params[:format])
         pdf = QuotePdf.new(@quote, view_context)
@@ -14,11 +15,11 @@ end
 
 def quote_send
 @quote = Quote.find(params['m_param']['id'])
-if @quote.email_count=nil
-       num_sent=1
-else
-        num_sent=@quote.email_count+1
-end
+    if @quote.email_count==nil
+           num_sent=1
+    else
+            num_sent=@quote.email_count+1
+    end
 quote_p={:email_count=>num_sent,:starttime=>Time.now}
 @quote.update(quote_p)
 UserMailer.send_quote2(@quote,params['m_param']['email_to'],
