@@ -1,15 +1,18 @@
 
-$.extend(true, $.fn.dataTable.defaults, {
-    sDom: "<'row'<'col-xs-6'l><'col-xs-6'f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>",
-    sPaginationType: "bootstrap",
-    oLanguage: {
-        sLengthMenu: "_MENU_ records per page"
-    }
-});
-
-$.extend($.fn.dataTableExt.oStdClasses, {
+if ($.fn.dataTable != undefined){
+    $.extend(true, $.fn.dataTable.defaults, {
+        sDom: "<'row'<'col-xs-6'l><'col-xs-6'f>r>t<'row'<'col-xs-6'i><'col-xs-6'p>>",
+        sPaginationType: "bootstrap",
+        oLanguage: {
+            sLengthMenu: "_MENU_ records per page"
+        }
+    });
+    $.extend($.fn.dataTableExt.oStdClasses, {
     sWrapper: "dataTables_wrapper form-inline"
-});
+    });
+
+
+
 
 $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
     return {
@@ -129,3 +132,5 @@ if ($.fn.DataTable.TableTools) {
         }
     });
 }
+}
+else{}
