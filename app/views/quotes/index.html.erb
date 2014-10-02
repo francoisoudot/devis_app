@@ -15,25 +15,27 @@
             <div class='box-content'> 
                     <div class='row'>
 
-              <div class='col-sm-7'>
+              <div class='col-sm-4'>
                 <div class='pull-left'>
                   
-                  <p><h4>Titre du devis <a href="/quotes?order=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=2"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Nom client <a href="/quotes?order=3"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=4"><i class="icon-sort-by-alphabet-alt"></i></a>
+                  <p><h4>Titre du devis <a href="/quotes?order=1"><i class="icon-sort-up"></i></a> <a href="/quotes?order=2"><i class="icon-sort-down"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Nom client <a href="/quotes?order=3"><i class="icon-sort-up"></i></a> <a href="/quotes?order=4"><i class="icon-sort-down"></i></a>
+
                   
                </div>
-
+             </div>
+            <div class='col-sm-3'>
                <div class='pull-right'>
                   
-                  <p><h4>Montant <a href="/quotes?order=5"><i class="icon-sort-by-order"></i></a> <a href="/quotes?order=6"><i class="icon-sort-by-order-alt"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Date de création <a href="/quotes?order=7"><i class="icon-sort-by-order"></i></a> <a href="/quotes?order=8"><i class="icon-sort-by-order-alt"></i></a>
+                  <p><h4>Montant <a href="/quotes?order=5"><i class="icon-sort-up"></i></a> <a href="/quotes?order=6"><i class="icon-sort-down"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Date de création <a href="/quotes?order=7"><i class="icon-sort-up"></i></a> <a href="/quotes?order=8"><i class="icon-sort-down"></i></a>
                   
                </div>
              </div>
              <div class='col-sm-3'>
              </div>
              <div class='col-sm-2'>
-              <p><h4>Statut <a href="/quotes?order=9"><i class="icon-sort-by-alphabet"></i></a> <a href="/quotes?order=10"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
+              <p><h4>Statut <a href="/quotes?order=9"><i class="icon-sort-up"></i></a> <a href="/quotes?order=10"><i class="icon-sort-down"></i></a></h4></p>
              </div>
             </div>
 
@@ -75,20 +77,22 @@
                         </p>
                       </div>
                   </div>
-                  <div class='col-sm-3'>
-                   <div class='text-right pull-right'>
-                    <a href="" class='' onclick="window.open('/visu_pdf/quote_visu.<%= quote.id %>','_blank');">Visualiser</a>
-                      |
-                    <a class='' data-toggle="modal" href="/quotes/<%= quote.id %>/invoice">Facturer</a>
-                      |  
-                    <%= link_to 'Supprimer', quote, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?' } %>
-                    
+
+                  <div class='col-sm-3 text-center'>
+                    <p><a data-toggle="modal" href="#modal-status_<%=quote.id%>"><h4><span class="label 
+                      <%="label-important" if quote.status==0%><%="label-warning" if quote.status==1%><%="label-success" if quote.status==2%>"><%="Devis refusé" if quote.status==0%><%="Devis en cours" if quote.status==1%><%="Devis accepté" if quote.status==2%></span></h4></a></p>
+                  </div>   
+                  <div class='col-sm-2'>
+                   <div class='text-right text-center'>
+                    <h4>
+                    <a href="" class='has-tooltip' data-placement="top" data-original-title="Visualiser"onclick="window.open('/visu_pdf/quote_visu.<%= quote.id %>','_blank');"><i class="icon-search"></i></a>
+                      &nbsp;
+                    <a class='has-tooltip' data-placement="top" data-original-title="Facturer" data-toggle="modal" href="/quotes/<%= quote.id %>/invoice"><i class="icon-money"></i></a>
+                      &nbsp; 
+                    <%= link_to '<i class="icon-trash"></i>'.html_safe, quote, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
+                    </h4>
                    </div> 
                   </div> 
-                  <div class='col-sm-2'>
-                    <p><a data-toggle="modal" href="#modal-status_<%=quote.id%>"><span class="label 
-                      <%="label-important" if quote.status==0%><%="label-warning" if quote.status==1%><%="label-success" if quote.status==2%>"><%="Devis refusé" if quote.status==0%><%="Devis en cours" if quote.status==1%><%="Devis accepté" if quote.status==2%></span></a></p>
-                  </div>   
                      <div class='modal fade' id='modal-status_<%=quote.id%>' tabindex='1'>
                       <div class='modal-dialog'>
                         <div class='modal-content'>
@@ -130,7 +134,7 @@
 
   <script type="text/javascript">
   $( document ).ready(function() {
-    $("#nav_quote").toggleClass( 'active');
+    $("#nav_quote").toggleClass('active');
 });
 
 function quoteStatus(id) {
@@ -169,6 +173,13 @@ function finishStatus(id){
  window.location.replace(url_show);
 }
 
+
+      $("#daterange2").daterangepicker({
+        format: "MM/DD/YYYY"
+      }, function(start, end) {
+        return $("#daterange2").parent().find("input").first().val(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
+      });
+      
   </script>
 
 

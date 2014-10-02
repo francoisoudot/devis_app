@@ -55,21 +55,21 @@
               <div class='col-sm-7'>
                 <div class='pull-left'>
                   
-                  <p><h4>Titre du devis <a href="/invoices?order=1&tab=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=2&tab=1"><i class="icon-sort-by-alphabet-alt"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Nom client <a href="/invoices?order=3&tab=1"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=4&tab=1"><i class="icon-sort-by-alphabet-alt"></i></a>
+                  <p><h4>Titre du devis <a href="/invoices?order=1&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=1"><i class="icon-sort-down"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Nom client <a href="/invoices?order=3&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=1"><i class="icon-sort-down"></i></a>
                   
                </div>
 
                <div class='pull-right'>
                   
-                  <p><h4>Montant <a href="/invoices?order=5&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=6&tab=1"><i class="icon-sort-by-order-alt"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Date de création <a href="/invoices?order=7&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=8&tab=1"><i class="icon-sort-by-order-alt"></i></a>
+                  <p><h4>Montant <a href="/invoices?order=5&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=1"><i class="icon-sort-down"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;Date de création <a href="/invoices?order=7&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=1"><i class="icon-sort-down"></i></a>
                   
                </div>
              </div>
              <div class='col-sm-4'>
-               <p><h4>Montant payé<a href="/invoices?order=9&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=10&tab=1"><i class="icon-sort-by-order-alt"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;% payé <a href="/invoices?order=11&tab=1"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=12&tab=1"><i class="icon-sort-by-order-alt"></i></a>
+               <p><h4>Montant payé<a href="/invoices?order=9&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=1"><i class="icon-sort-down"></i></a></h4></p>
+                  &nbsp;&nbsp;&nbsp;% payé <a href="/invoices?order=11&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=1"><i class="icon-sort-down"></i></a>
              </div>
              <div class='col-sm-1'>
              </div>
@@ -138,9 +138,10 @@
                             </p>
                           </div>
                           <div class='col-sm-1'>
-                           <div class='text-right pull-right'>
-                            <%= link_to 'Supprimer', invoice, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer cette facture?' } %>
-                            
+                           <div class='text-right text-center'>
+                            <h4>
+                            <%= link_to '<i class="icon-trash"></i>'.html_safe, invoice, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer cette facture?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
+                            </h4>
                            </div> 
                           </div>      
                           <div class='clearfix'></div>
@@ -152,17 +153,17 @@
                     <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
                     <thead>
                       <tr>
-                        <th width="10%"># <a href="/invoices?order=1&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=2&tab=2"><i class="icon-sort-by-order-alt"></i></a></th>
-                        <th width="25%"><p>Titre du devis <a href="/invoices?order=3&tab=2"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=4&tab=2"><i class="icon-sort-by-alphabet-alt"></i></a></p>
-                        &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2"><i class="icon-sort-by-alphabet"></i></a> <a href="/invoices?order=12&tab=2"><i class="icon-sort-by-alphabet-alt"></i></a>
+                        <th width="10%"># <a href="/invoices?order=1&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2"><i class="icon-sort-down"></i></a></th>
+                        <th width="25%"><p>Titre du devis <a href="/invoices?order=3&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2"><i class="icon-sort-down"></i></a></p>
+                        &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2"><i class="icon-sort-down"></i></a>
                         </th>
-                        <th width="15%">Echéance <a href="/invoices?order=5&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=6&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                        <th width="15%">Echéance <a href="/invoices?order=5&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2"><i class="icon-sort-down"></i></a>
                         </th>
                         <th width="15%">
-                          % facturé <a href="/invoices?order=7&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=8&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                          % facturé <a href="/invoices?order=7&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2"><i class="icon-sort-down"></i></a>
                         </th>
                         <th width="10%">
-                          Statut <a href="/invoices?order=9&tab=2"><i class="icon-sort-by-order"></i></a> <a href="/invoices?order=10&tab=2"><i class="icon-sort-by-order-alt"></i></a>
+                          Statut <a href="/invoices?order=9&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2"><i class="icon-sort-down"></i></a>
                         </th>
                         <th width="25%">
                           Actions

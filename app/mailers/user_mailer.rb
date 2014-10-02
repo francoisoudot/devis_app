@@ -8,7 +8,7 @@ class UserMailer < ActionMailer::Base
     @client= Client.find_by_id(@quote.client_id)
     subject='Réponse à votre demande de devis pour '+@quote.title+ " de l'entreprise flatty"
     pdf = QuotePdf.new(@quote, view_context)
-    attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+    attachments["devis.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
   	if @client.email != nil
     	mail(to: @client.email,
             from: 'no-reply@whatever.net', 
@@ -26,7 +26,7 @@ def send_quote2(quote,to,obj,bod,att)
     subject=mail_object
     if att=="true"
       pdf = QuotePdf.new(@quote, view_context)
-      attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+      attachments["facture.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
     end
     if @client.email != nil
       mail(to: mail_to, 

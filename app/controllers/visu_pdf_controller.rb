@@ -31,7 +31,7 @@ def sub_invoice_visu
 @sub_invoice=SubInvoice.find(params[:format])
         pdf = SubinvoicePdf.new(@sub_invoice, view_context)
         send_data pdf.render, 
-        filename: "invoice.pdf",
+        filename: "facture.pdf",
         type: "application/pdf",
         disposition: "inline"
 end

@@ -11,14 +11,8 @@
 // about supported directives.
 //
 //= require flatty/jquery/jquery.min
-//= require flatty/jquery/jquery.mobile.custom.min
-//= require flatty/jquery/jquery-migrate.min
 //= require flatty/jquery/jquery-ui.min
-//= require flatty/bootstrap/bootstrap.min
+//= require flatty/bootstrap/bootstrap
 //= require flatty/plugins/plugins
-//= require flatty/plugins/bootstrap_hover_dropdown/twitter-bootstrap-hover-dropdown.min
-//= require flatty/theme
-//= require jquery
-//= require jquery_ujs
-//= require turbolinks
+//= require rails
 //= require_tree 
