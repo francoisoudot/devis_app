@@ -18,14 +18,6 @@
 //= require flatty/plugins/input_mask/bootstrap-inputmask.min
 //= require flatty/plugins/fileinput/bootstrap-fileinput
 //= require flatty/plugins/retina/retina
-//= require flatty/plugins/fileupload/tmpl.min
-//= require flatty/plugins/fileupload/load-image.min
-//= require flatty/plugins/fileupload/canvas-to-blob.min
-//= require flatty/plugins/fileupload/jquery.iframe-transport.min
-//= require flatty/plugins/fileupload/jquery.fileupload.min
-//= require flatty/plugins/fileupload/jquery.fileupload-fp.min
-//= require flatty/plugins/fileupload/jquery.fileupload-ui.min
-//= require flatty/plugins/fileupload/jquery.fileupload-init
 //= require flatty/plugins/timeago/jquery.timeago
 //= require flatty/plugins/slimscroll/jquery.slimscroll.min
 //= require flatty/plugins/autosize/jquery.autosize-min
@@ -38,7 +30,6 @@
 //= require flatty/plugins/tabdrop/bootstrap-tabdrop
 //= require flatty/plugins/jgrowl/jquery.jgrowl.min
 //= require flatty/plugins/bootbox/bootbox.min
-//= require flatty/plugins/ckeditor/ckeditor
 //= require flatty/plugins/dynatree/jquery.dynatree.min
 //= require flatty/plugins/bootstrap_datetimepicker/bootstrap-datetimepicker
 //= require flatty/plugins/bootstrap_daterangepicker/bootstrap-daterangepicker
