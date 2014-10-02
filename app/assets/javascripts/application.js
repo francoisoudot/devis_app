@@ -10,8 +10,6 @@
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require flatty/jquery/jquery.min
-//= require flatty/jquery/jquery-ui.min
 //= require flatty/bootstrap/bootstrap
 //= require flatty/plugins/plugins
 //= require rails

@@ -26,7 +26,7 @@ def send_quote2(quote,to,obj,bod,att)
     subject=mail_object
     if att=="true"
       pdf = QuotePdf.new(@quote, view_context)
-      attachments["facture.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+      attachments["devis.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
     end
     if @client.email != nil
       mail(to: mail_to, 
@@ -49,7 +49,7 @@ def send_quote2(quote,to,obj,bod,att)
     subject=mail_object
     if att=="true"
       pdf = SubinvoicePdf.new(@sub_inv, view_context)
-      attachments["invoice.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
+      attachments["facture.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
     end
     if @client.email != nil
       mail(to: mail_to, 
