@@ -93,7 +93,7 @@ class QuotesController < ApplicationController
 
   def invoice
     q = Quote.find(params[:id])
-    q.update({:status=>2})
+    q.update({:status=>2, :endtime=>Time.now})
     invoice_create(q)
     respond_to do |format|
       format.html { redirect_to @invoice }

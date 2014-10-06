@@ -20,7 +20,7 @@ def create
 		:status => status,:comment => comment, :echeance => echeance, :starttime => starttime,
 		:endtime => endtime)
 	render json:  {:si_id=>@sub_invoice.id}
-end
+end 
 
 
   def delete
@@ -43,7 +43,7 @@ end
 		new_total=@invoice.total_paid.to_d+amount.to_d
 	end
   	@invoice.update(:total_paid => new_total)
-  	@sub_invoice.update(:status => 2)
+  	@sub_invoice.update(:status => 2, :endtime => Time.now)
   	respond_to do |format|
       format.html { redirect_to invoice_url(@invoice) }
       format.json { head :no_content }
@@ -60,7 +60,7 @@ end
 		new_total=@invoice.total_paid.to_d-amount.to_d
 	end
   	@invoice.update(:total_paid => new_total)
-  	@sub_invoice.update(:status => 1)
+  	@sub_invoice.update(:status => 1, :endtime => nil)
   	respond_to do |format|
       format.html { redirect_to invoice_url(@invoice) }
       format.json { head :no_content }

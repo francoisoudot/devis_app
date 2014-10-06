@@ -47,4 +47,92 @@ UserMailer.send_sub_invoice(@sub_invoice,params['m_param']['email_to'],
 	params['m_param']['attachement']).deliver
 end
 
+
+def report
+    @months=[]
+    @cumulated_amount_all_quotes=[]
+    @cumulated_amount_accepted_quotes=[]
+    @cumulated_amount_all_sub_inv=[]
+    @cumulated_amount_accepted_sub_inv=[]
+    # @c_a_all_si=[]
+    # @c_a_acc_si=[]
+    m0=Time.now.strftime('%m').to_i
+    y0=("20"+Time.now.strftime('%y')).to_i
+    i=5
+    while i>=0
+        if m0-i <= 0
+            m=12+m0-i
+            y=y0-1
+        else
+            m=m0-i
+            y=y0
+        end
+        @months << m
+# quote stat
+        quotes_all=Quote.by_month(m, field: :starttime, :year => y)
+        quotes_accepted=Quote.by_month(m, field: :endtime, :year => y).where(status: '2')
+        if quotes_all!=[]
+            c_a_all_q=0
+            quotes_all.each do |q|
+                if q.total!=nil
+                    c_a_all_q=c_a_all_q+q.total
+                end
+            end
+        else
+            c_a_all_q=0
+        end
+        if quotes_accepted!=[]
+            c_a_acc_q=0
+            quotes_accepted.each do |q|
+                if q.total!=nil
+                    c_a_acc_q=c_a_acc_q+q.total
+                end
+            end
+        else
+            c_a_acc_q=0
+        end
+        @cumulated_amount_all_quotes<<[m,c_a_all_q.to_i]
+        @cumulated_amount_accepted_quotes<<[m,c_a_acc_q.to_i]
+# invoices stat
+        sub_inv_all=SubInvoice.by_month(m, field: :starttime, :year => y)
+        sub_inv_accepted=SubInvoice.by_month(m, field: :endtime, :year => y).where(status: '2')
+        if sub_inv_all!=[]
+            c_a_all_si=0
+            sub_inv_all.each do |q|
+                if q.total!=nil
+                    c_a_all_si=c_a_all_si+q.total
+                end
+            end
+        else
+            c_a_all_si=0
+        end
+        if sub_inv_accepted!=[]
+            c_a_acc_si=0
+            sub_inv_accepted.each do |q|
+                if q.total!=nil
+                    c_a_acc_si=c_a_acc_si+q.total
+                end
+            end
+        else
+            c_a_acc_si=0
+        end
+        @cumulated_amount_all_sub_inv<<[m,c_a_all_si.to_i]
+        @cumulated_amount_accepted_sub_inv<<[m,c_a_acc_si.to_i]
+        # @c_a_all_si<<c_a_all_si
+        # @c_a_acc_si<<c_a_acc_si
+        i=i-1
+    end
+    @quotes=Quote.where(status: '2').where('starttime <= ?', 1.week.ago)+Quote.where(status: '1').where('created_at <= ?', 1.week.ago)
+    @sub_inv=SubInvoice.where(status: '1').where('endtime<=?',Time.now) + SubInvoice.where(status: '0').where('starttime<=?',Time.now)
+    #invoice graph
+    # @q_min=([@cumulated_amount_all_quotes.min,@cumulated_amount_accepted_quotes.min].min-1).to_i
+    # @q_max=([@cumulated_amount_all_quotes.max,@cumulated_amount_accepted_quotes.max].max+1).to_i
+    # @q_scale=(@q_max-@q_min)/5
+    # @si_min=([@c_a_all_si.min,@c_a_acc_si.min].min-1).to_i
+    # @si_max=([@c_a_all_si.max,@c_a_acc_si.max].max+1).to_i
+    # @si_scale=((@si_max-@si_min)/5).to_i
+
+
+end
+
 end

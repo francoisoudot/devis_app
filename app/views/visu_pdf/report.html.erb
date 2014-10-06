@@ -1,0 +1,365 @@
+<div class='row'>
+  <div class='col-sm-12'>
+    <div class='page-header'>
+      <h1 class='pull-left'>
+        <i class='icon-dashboard'></i>
+        <span>Rapport</span>
+      </h1>
+    </div>
+    <div class='box'>
+      <div class="box-header">
+        <div class="title">
+          <i class="icon-money"></i>
+          Facture à suivre
+        </div>
+      </div>
+      <div class='box-content'> 
+        <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+        <thead>
+          <tr>
+            <th width="10%"># <a href="/invoices?order=1&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2" class="hide"><i class="icon-sort-down"></i></a></th>
+            <th width="25%"><p>Titre de la facture <a href="/invoices?order=3&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2" class="hide"><i class="icon-sort-down"></i></a></p>
+            &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="15%">Echéance <a href="/invoices?order=5&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="15%">
+              % facturé <a href="/invoices?order=7&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="10%">
+              Statut <a href="/invoices?order=9&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="25%">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @sub_inv.each do |k| %>
+           <% 
+           @invoice=Invoice.find(k.invoice_id)
+           @tax_rate=@invoice.tax_rate
+           @total=@invoice.total*(1+@tax_rate)
+           @client=Client.find_by_id(@invoice.client_id)
+           if @total!=nil
+                 @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
+               else
+                  @si_pourc_paid=0
+                end
+                %>
+           <div>
+                <tr>
+                  <td width="10%">
+                      <div class='text-center'> 
+                        # <%=k.id%>
+                       </div>
+                  </td>
+                  <td width="25%"> 
+                    <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
+                    <%= link_to(clients_path) do %>
+                          <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+
+                        <% end %>
+                  </td>
+                  <td width="15%">
+                    <%=k.endtime.strftime("%d/%m/%Y")%>
+                  </td>
+                  <td width="15%">
+                    <p><%=k.total.to_s%> € TTC</p>
+                     <%= @si_pourc_paid %> %
+                  </td>
+                  <td width="10%">
+                    <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
+                  </td>
+                  <td width="25%">
+                    <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
+                    if k.status==2
+                      "hide"
+                    end%>">Marquer payé | </a>
+                    <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
+                    if k.status!=2
+                      "hide"
+                    end%>">Repasser en non payée</a>
+                    <a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                    if k.status != 0
+                      "hide"
+                    end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
+                    if k.status !=1
+                      "hide"
+                    end%>">Relancer facture | </a><a data-confirm="Are you sure?" data-method="delete" href="/sub_invoice/<%=k.id%>" rel="nofollow" class="<%=
+                    if k.status==2
+                      "hide"
+                    end%>">Supprimer</a>
+       <div class='modal fade' id='modal-envoyer-<%=k.id%>' tabindex='1'>
+          <div class='modal-dialog'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= k.title %> #<%=k.id%></h4>
+              </div>
+              <div class='modal-body'>
+                <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                  <label for='email_to'>Envoyé à</label>
+                  <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                </div>
+                <div class='form-group'>
+                  <label for='email_object'>Objet</label>
+                  <input class='form-control' id='email_object' placeholder='Objet' type='text' value="<%=
+                    if k.status == 0
+                      "Facture #"+k.id.to_s+" de l'entreprise flatty pour la prestation "+ @invoice.title
+                    else
+                      "Relance facture "+k.id.to_s+" de l'entreprise flatty pour la prestation "+@invoice.title
+                    end%>">
+                </div>
+                <div class='form-group'>
+                  <label for='email_body'>Corps</label>
+                  <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+<%=
+if k.status == 0
+"Veuillez trouver ci-joint le facture de "+k.total.to_s+" euros pour la prestation de "+@invoice.title+". Dans l'attente de votre aimable règlement, je reste à votre disposition pour toute information complémentaire."
+else
+"Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
+end%>
+
+
+En votre aimable règlement,
+
+Francois Oudot
+92 Henry street
+94114 SF
+0666666666
+email</textarea>
+                </div>
+                <hr class='hr-normal'>
+                <div class='form-group'>
+                  <div class='checkbox'>
+                    <label>
+                      <input type='checkbox' checked id="attachement">
+Envoyer la facture attachée au mail                                </label>
+                  </div>
+                </div>
+                </form>
+  
+              </div>
+              <div class='modal-footer'>
+                <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                <button class='btn btn-success' data-dismiss='modal' type='button' onclick="sub_invoiceSend(<%= k.id %>,<%= @invoice.id%>);">Envoyer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                  </td>
+                </tr>
+              </div>
+
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class='box'>
+      <div class="box-header">
+        <div class="title">
+          <i class="icon-inbox"></i>
+          Devis à suivre
+        </div>
+      </div>
+      <div class='box-content'> 
+        <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+        <thead>
+          <tr>
+            <th width="10%"># <a href="/invoices?order=1&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2" class="hide"><i class="icon-sort-down"></i></a></th>
+            <th width="25%"><p>Titre du devis <a href="/invoices?order=3&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2" class="hide"><i class="icon-sort-down"></i></a></p>
+            &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="15%">Date de création <a href="/invoices?order=5&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="15%">
+              Montant<a href="/invoices?order=7&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="10%">
+              Statut <a href="/invoices?order=9&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            </th>
+            <th width="25%">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @quotes.each do |k| %>
+           <% 
+           @tax_rate=k.tax_rate
+           @total=k.total*(1+@tax_rate)
+           @client=Client.find_by_id(k.client_id)
+           %>
+           <div>
+                <tr>
+                  <td width="10%">
+                      <div class='text-center'> 
+                        # <%=k.id%>
+                       </div>
+                  </td>
+                  <td width="25%"> 
+                    <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
+                    <%= link_to(clients_path) do %>
+                          <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+
+                        <% end %>
+                  </td>
+                  <td width="15%">
+                    <%=k.created_at.strftime("%d/%m/%Y")%>
+                  </td>
+                  <td width="15%">
+                    <p><%=k.total.to_s%> € TTC</p>
+                  </td>
+                  <td width="10%">
+                    <span class="label 
+                      <%="label-important" if k.status==0%><%="label-warning" if k.status==1%><%="label-success" if k.status==2%>"><%="Devis refusé" if k.status==0%><%="Devis en cours" if k.status==1%><%="Devis accepté" if k.status==2%></span>
+                  </td>
+                  <td width="25%">
+                    <h4>
+                    <a href="" class='has-tooltip' data-placement="top" data-original-title="Visualiser"onclick="window.open('/visu_pdf/quote_visu.<%= k.id %>','_blank');"><i class="icon-search"></i></a>
+                      &nbsp;
+                    <a class='has-tooltip' data-placement="top" data-original-title="Facturer" data-toggle="modal" href="/quotes/<%= k.id %>/invoice"><i class="icon-money"></i></a>
+                      &nbsp; 
+                    <%= link_to '<i class="icon-trash"></i>'.html_safe, k, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
+                    </h4>
+
+                  </td>
+                </tr>
+              </div>
+
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="row">
+                <div class="col-sm-6 box">
+                  <div class="box-header">
+                    <div class="title">
+                      <i class="icon-inbox"></i>
+                      Devis
+                    </div>
+                    <div class="actions">
+                      <a class="btn box-remove btn-xs btn-link" href="#"><i class="icon-remove"></i>
+                      </a>
+                      
+                      <a class="btn box-collapse btn-xs btn-link" href="#"><i></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="box-content">
+                    <div id="stats-chart1" style="padding: 0px; position: relative;"></div>
+                  </div>
+                </div>
+                <div class="col-sm-6 box">
+                  <div class="box-header">
+                    <div class="title">
+                      <i class="icon-money"></i>
+                      Facture
+                    </div>
+                    <div class="actions">
+                      <a class="btn box-remove btn-xs btn-link" href="#"><i class="icon-remove"></i>
+                      </a>
+                      
+                      <a class="btn box-collapse btn-xs btn-link" href="#"><i></i>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="box-content">
+                    <div id="stats-chart2" style="padding: 0px; position: relative;"></div>
+                  </div>
+                </div>
+              </div>
+
+  </div>
+</div>
+
+<script>
+ $( document ).ready(function() {
+    $("#nav_report").toggleClass( 'active');
+});
+      var data, dataset, gd, options, previousLabel, previousPoint, showTooltip, ticks;
+      var blue, data, datareal, getRandomData, green, i, newOrders, options, orange, orders, placeholder, plot, purple, randNumber, randSmallerNumber, red, series, totalPoints, update, updateInterval;
+      var red = "#f34541";
+      var orange = "#f8a326";
+      var blue = "#00acec";
+      var purple = "#9564e2";
+      var green = "#49bf67";
+
+      if ($("#stats-chart1").length !== 0) {
+        quote_total = <%= @cumulated_amount_all_quotes %>;
+        quote_acc = <%= @cumulated_amount_accepted_quotes %>;
+        plot = $.plot($("#stats-chart1"), [
+          {
+            data: quote_total,
+            label: "total des devis créé"
+          }, {
+            data: quote_acc,
+            label: "total des devis accepté"
+          }
+        ], {
+          series: {
+            lines: {
+              show: true,
+              lineWidth: 3
+            },
+            shadowSize: 0
+          },
+          legend: {
+            show: false
+          },
+          grid: {
+            clickable: true,
+            hoverable: true,
+            borderWidth: 0,
+            tickColor: "#f4f7f9"
+          },
+          colors: ["#00acec", "#f8a326"]
+        });
+      }
+      if ($("#stats-chart2").length !== 0) {
+        si_total = <%= @cumulated_amount_all_sub_inv %>;
+        si_acc = <%= @cumulated_amount_accepted_sub_inv %>;
+        plot = $.plot($("#stats-chart2"), [
+          {
+            data: si_total,
+            label: "total facturé"
+          }, {
+            data: si_acc,
+            label: "total payé"
+          }
+        ], {
+          series: {
+            lines: {
+              show: true,
+              lineWidth: 3
+            },
+            shadowSize: 0
+          },
+          legend: {
+            show: false
+          },
+          grid: {
+            clickable: true,
+            hoverable: true,
+            borderWidth: 0,
+            tickColor: "#f4f7f9"
+          },
+          colors: ["#f34541", "#49bf67"]
+        });
+        $("#stats-chart1").bind("plotclick", function(event, pos, item) {
+          if (item) {
+            return alert("Pour le mois du " + item.datapoint[0] + " le " + item.series.label + "est de "+item.datapoint[1]+" euros.");
+          }
+        });
+        $("#stats-chart2").bind("plotclick", function(event, pos, item) {
+          if (item) {
+            return alert("Pour le mois du " + item.datapoint[0] + " le " + item.series.label + " est de "+item.datapoint[1]+" euros.");
+          }
+        });
+      }
+    </script>

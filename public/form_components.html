@@ -1224,7 +1224,7 @@
         format: "MM/DD/YYYY"
       }, function(start, end) {
         return $("#daterange2").parent().find("input").first().val(start.format("MMMM D, YYYY") + " - " + end.format("MMMM D, YYYY"));
-      });
+      }); 
       
       $(".mention").mention({
         users: [

@@ -11,13 +11,11 @@
 // about supported directives.
 //
 //= require flatty/jquery/jquery.min.js
+//= require flatty/jquery/jquery-migrate.min.js
 //= require flatty/jquery/jquery-ui.min.js
 //= require flatty/bootstrap/bootstrap.min.js
-//= require flatty/plugins/autosize/jquery.autosize-min.js
-//= require flatty/plugins/bootstrap_daterangepicker/bootstrap-daterangepicker.js
-//= require flatty/plugins/bootstrap_hover_dropdown/twitter-bootstrap-hover-dropdown.min.js
-//= require flatty/plugins/bootstrap_maxlength/bootstrap-maxlength.min.js
-//= require flatty/plugins/timeago/jquery.timeago.js
-//= require flatty/plugins/slider_nav/slidernav-min.js
+//= require flatty/plugins/plugins
 //= require rails.js
 //= require_tree 
+
+
