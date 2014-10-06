@@ -85,7 +85,7 @@ class QuotesController < ApplicationController
 
   def status
   @quote = Quote.find(params[:id])
-  @quote.update({:status=>params['q_param']['status'].to_d})
+  @quote.update({:status=>params['q_param']['status'].to_d, :endtime=>Time.now})
     if @quote.status == 2
       invoice_create(@quote)
     end

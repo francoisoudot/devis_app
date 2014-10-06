@@ -362,7 +362,7 @@ Envoyer la facture attachée au mail                                </label>
         });
         $("#stats-chart1").bind("plotclick", function(event, pos, item) {
           if (item) {
-            return alert("Pour le mois du " + item.datapoint[0] + " le " + item.series.label + "est de "+item.datapoint[1]+" euros.");
+            return alert("Pour le mois du " + item.datapoint[0] + " le " + item.series.label + " est de "+item.datapoint[1]+" euros.");
           }
         });
         $("#stats-chart2").bind("plotclick", function(event, pos, item) {
