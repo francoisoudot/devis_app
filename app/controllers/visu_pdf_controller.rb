@@ -122,7 +122,7 @@ def report
         # @c_a_acc_si<<c_a_acc_si
         i=i-1
     end
-    @quotes=Quote.where(status: '2').where('starttime <= ?', 1.week.ago)+Quote.where(status: '1').where('created_at <= ?', 1.week.ago)
+    @quotes=Quote.where(status: '2').where('starttime <= ?', 1.week.ago)+Quote.where(status: '1').where('created_at <= ?', 2.days.ago)
     @sub_inv=SubInvoice.where(status: '1').where('endtime<=?',Time.now) + SubInvoice.where(status: '0').where('starttime<=?',Time.now)
     #invoice graph
     # @q_min=([@cumulated_amount_all_quotes.min,@cumulated_amount_accepted_quotes.min].min-1).to_i
