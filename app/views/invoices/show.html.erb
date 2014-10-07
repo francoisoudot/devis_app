@@ -18,9 +18,9 @@
             </div>
             </p>
         </div>
-      </div>
+      </div> 
     </div>
-	  <div class='col-sm-12'>
+	  <div class='col-sm-12'> 
     <div class='row' id='detail'>
       <div class='col-sm-12'>
         <div class='box'>
@@ -101,10 +101,10 @@
                         </div>
                       </div>
                     </div>
-            <div class='row' id='sub_invoice' <%=
+            <div class='row<%=
                   if @sub_inv == []
                     "hide"
-                  end%>>
+                  end%>' id='sub_invoice' >
             <h4>Liste des factures émises pour ces prestations</h4>
             <div class="box-content box-no-padding">
               <div class="responsive-table">

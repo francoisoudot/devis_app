@@ -11,6 +11,7 @@
 // about supported directives.
 //
 //= require flatty/jquery/jquery.min.js
+//= require flatty/jquery/jquery.mobile.custom.min
 //= require flatty/jquery/jquery-migrate.min.js
 //= require flatty/jquery/jquery-ui.min.js
 //= require flatty/bootstrap/bootstrap.min.js
