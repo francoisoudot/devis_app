@@ -1,4 +1,3 @@
-<div id='orders'>
   <div class='row'>
     <div class='col-sm-12'>
       <div class='page-header'>
@@ -10,7 +9,9 @@
 
 <a class="btn btn-success btn-block btn-lg" type="button" href="/quotes/new">Nouveau devis</a>
           <p></p>
-
+        </div>
+        </div>
+ 
 
  <div class='row'>
   <div class='col-sm-12'>
@@ -120,130 +121,6 @@
   </div>
   </div>
 
-                  <div class='clearfix'></div>
-                  <hr class='hr-normal'>
-
-          <div class='box'>
-            <div class='box-content'> 
-                    <div class='row'>
-
-              <div class='col-sm-4'>
-                <div class='pull-left'>
-                  
-                  <p><h4>Titre du devis <a href="/quotes?order=1"><i class="icon-sort-up"></i></a> <a href="/quotes?order=2"><i class="icon-sort-down"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Nom client <a href="/quotes?order=3"><i class="icon-sort-up"></i></a> <a href="/quotes?order=4"><i class="icon-sort-down"></i></a>
-
-                  
-               </div>
-             </div>
-            <div class='col-sm-3'>
-               <div class='pull-right'>
-                  
-                  <p><h4>Montant <a href="/quotes?order=5"><i class="icon-sort-up"></i></a> <a href="/quotes?order=6"><i class="icon-sort-down"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Date de création <a href="/quotes?order=7"><i class="icon-sort-up"></i></a> <a href="/quotes?order=8"><i class="icon-sort-down"></i></a>
-                  
-               </div>
-             </div>
-             <div class='col-sm-3 text-center'>
-            <p><h4>Statut <a href="/quotes?order=9"><i class="icon-sort-up"></i></a> <a href="/quotes?order=10"><i class="icon-sort-down"></i></a></h4></p>
-             </div>
-             <div class='col-sm-2'>
-
-             </div>
-            </div>
-
-          </div>
-        </div>
-          <div class='box'>
-            <div class='box-content'> 
-              <% @quotes.each do |quote| %>
-                <tr>
-                  <div class='col-sm-7'>
-                      <div class='pull-left'>
-                        <p>
-                          <%= link_to(quote) do %>
-                            <h4>#<%= quote.id %>  <%= quote.title %> </h4>
-
-                          <% end %>
-                        </p>
-                        <p>
-                          <% @client=Client.find_by_id(quote.client_id) %>
-
-                            <%= link_to(clients_path) do %>
-                              <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize %>                                            
-
-                            <% end %>
-                        </p>  
-                      </div>
-                      <div class='text-right pull-right'>
-
-                        <% 
-                        @tax_rate=quote.tax_rate
-                        if @tax_rate==nil
-                          @tax_rate=0
-                        end 
-                        %>
-                        <h4 class='contrast price'><%= quote.total.to_d*(1+@tax_rate.to_d) if quote.total!=nil %> € TTC</h4>
-                        <p>
-                          <span><%= distance_of_time_in_words(Time.now, quote.created_at) %></span>
-                          <i class='icon-time'></i>
-                        </p>
-                      </div>
-                  </div>
-
-                  <div class='col-sm-3 text-center'>
-                    <p><a data-toggle="modal" href="#modal-status_<%=quote.id%>"><h4><span class="label 
-                      <%="label-important" if quote.status==0%><%="label-warning" if quote.status==1%><%="label-success" if quote.status==2%>"><%="Devis refusé" if quote.status==0%><%="Devis en cours" if quote.status==1%><%="Devis accepté" if quote.status==2%></span></h4></a></p>
-                  </div>   
-                  <div class='col-sm-2'>
-                   <div class='text-right text-center'>
-                    <h4>
-                    <a href="" class='has-tooltip' data-placement="top" data-original-title="Visualiser"onclick="window.open('/visu_pdf/quote_visu.<%= quote.id %>','_blank');"><i class="icon-search"></i></a>
-                      &nbsp;
-                    <a class='has-tooltip' data-placement="top" data-original-title="Facturer" data-toggle="modal" href="/quotes/<%= quote.id %>/invoice"><i class="icon-money"></i></a>
-                      &nbsp; 
-                    <%= link_to '<i class="icon-trash"></i>'.html_safe, quote, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
-                    </h4>
-                   </div> 
-                  </div> 
-                     <div class='modal fade' id='modal-status_<%=quote.id%>' tabindex='1'>
-                      <div class='modal-dialog'>
-                        <div class='modal-content'>
-                          <div class='modal-header'>
-                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
-                            <h4 class='modal-title' id='myModalLabel'>Modifier le statut du devis #<%=quote.id%> - <%=quote.title%></h4>
-                          </div>
-                          <div class='modal-body'>
-                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" />
-                              <div class='form-group'>
-                                <label for='status'>Statut</label>
-                                <select class="form-control input-sm" data-rule-required="true" id="status_select_<%=quote.id%>" name="validation_select">
-                                    <option <%= "selected" if quote.status==1 %>>Devis en cours</option>
-                                    <option <%= "selected" if quote.status==2 %>>Devis accepté</option>
-                                    <option <%= "selected" if quote.status==0 %>>Devis refusé</option>
-                                </select>
-                              </div>
-                            </form>
-                          </div>
-                          <div class='modal-footer'>
-                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans modifier le statut</button>
-                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="quoteStatus(<%= quote.id %>);">Modifier le statut</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>  
-                  <div class='clearfix'></div>
-                  <hr class='hr-normal'>
-                </tr>
-              <% end %>
-            </div>
-            
-          </div>
-        </div>
-      </div>
-    </div>
-    
-  </div>
 
   <script type="text/javascript">
   $( document ).ready(function() {

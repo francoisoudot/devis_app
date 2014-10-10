@@ -6,11 +6,17 @@
         <span>Rapport</span>
       </h1>
     </div>
-    <div class='box'>
+
+<!-- 1st table invoice late
+ -->
+    <div class='box <%=
+                    if @sub_inv_late==[]
+                      "hide" 
+                    end%>'>
       <div class="box-header">
         <div class="title">
           <i class="icon-money"></i>
-          Facture à suivre
+          Facture en retard
         </div>
       </div>
       <div class='box-content'> 
@@ -19,17 +25,17 @@
         <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
         <thead>
           <tr>
-            <th width="10%"># <a href="/invoices?order=1&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2" class="hide"><i class="icon-sort-down"></i></a></th>
-            <th width="25%"><p>Titre de la facture <a href="/invoices?order=3&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2" class="hide"><i class="icon-sort-down"></i></a></p>
-            &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            <th width="10%"># </th>
+            <th width="25%"><p>Titre de la facture </p>
+            &nbsp;&nbsp;&nbsp;Nom du client 
             </th>
-            <th width="15%">Echéance <a href="/invoices?order=5&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            <th width="15%">Echéance 
             </th>
             <th width="15%">
-              % facturé <a href="/invoices?order=7&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+              % facturé 
             </th>
             <th width="10%">
-              Statut <a href="/invoices?order=9&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+              Statut
             </th>
             <th width="25%">
               Actions
@@ -37,7 +43,7 @@
           </tr>
         </thead>
         <tbody>
-           <% @sub_inv.each do |k| %>
+           <% @sub_inv_late.each do |k| %>
            <% 
            @invoice=Invoice.find(k.invoice_id)
            @tax_rate=@invoice.tax_rate
@@ -163,11 +169,16 @@ Envoyer la facture attachée au mail                                </label>
     </div>
     </div>
 
-    <div class='box'>
+<!-- 2nd table invoice to send
+ -->
+    <div class='box <%=
+                    if @sub_inv_tosend==[]
+                      "hide"
+                    end%>'>
       <div class="box-header">
         <div class="title">
-          <i class="icon-inbox"></i>
-          Devis à suivre
+          <i class="icon-money"></i>
+          Facture à envoyer
         </div>
       </div>
       <div class='box-content'> 
@@ -176,17 +187,17 @@ Envoyer la facture attachée au mail                                </label>
         <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
         <thead>
           <tr>
-            <th width="10%"># <a href="/invoices?order=1&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2" class="hide"><i class="icon-sort-down"></i></a></th>
-            <th width="25%"><p>Titre du devis <a href="/invoices?order=3&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2" class="hide"><i class="icon-sort-down"></i></a></p>
-            &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            <th width="10%"># </th>
+            <th width="25%"><p>Titre de la facture </p>
+            &nbsp;&nbsp;&nbsp;Nom du client 
             </th>
-            <th width="15%">Date de création <a href="/invoices?order=5&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+            <th width="15%">Echéance 
             </th>
             <th width="15%">
-              Montant<a href="/invoices?order=7&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+              % facturé 
             </th>
             <th width="10%">
-              Statut <a href="/invoices?order=9&tab=2" class="hide"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2" class="hide"><i class="icon-sort-down"></i></a>
+              Statut
             </th>
             <th width="25%">
               Actions
@@ -194,10 +205,181 @@ Envoyer la facture attachée au mail                                </label>
           </tr>
         </thead>
         <tbody>
-           <% @quotes.each do |k| %>
+           <% @sub_inv_tosend.each do |k| %>
            <% 
-           @tax_rate=k.tax_rate
-           @total=k.total*(1+@tax_rate)
+           @invoice=Invoice.find(k.invoice_id)
+           @tax_rate=@invoice.tax_rate
+           @total=@invoice.total*(1+@tax_rate)
+           @client=Client.find_by_id(@invoice.client_id)
+           if @total!=nil
+                 @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
+               else
+                  @si_pourc_paid=0
+                end
+                %>
+           <div>
+                <tr>
+                  <td width="10%">
+                      <div class='text-center'> 
+                        # <%=k.id%>
+                       </div>
+                  </td>
+                  <td width="25%"> 
+                    <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
+                    <%= link_to(clients_path) do %>
+                          <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+
+                        <% end %>
+                  </td>
+                  <td width="15%">
+                    <%=k.endtime.strftime("%d/%m/%Y")%>
+                  </td>
+                  <td width="15%">
+                    <p><%=k.total.to_s%> € TTC</p>
+                     <%= @si_pourc_paid %> %
+                  </td>
+                  <td width="10%">
+                    <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
+                  </td>
+                  <td width="25%">
+                    <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
+                    if k.status==2
+                      "hide"
+                    end%>">Marquer payé | </a>
+                    <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
+                    if k.status!=2
+                      "hide"
+                    end%>">Repasser en non payée</a>
+                    <a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                    if k.status != 0
+                      "hide"
+                    end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
+                    if k.status !=1
+                      "hide"
+                    end%>">Relancer facture | </a><a data-confirm="Are you sure?" data-method="delete" href="/sub_invoice/<%=k.id%>" rel="nofollow" class="<%=
+                    if k.status==2
+                      "hide"
+                    end%>">Supprimer</a>
+       <div class='modal fade' id='modal-envoyer-<%=k.id%>' tabindex='1'>
+          <div class='modal-dialog'>
+            <div class='modal-content'>
+              <div class='modal-header'>
+                <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= k.title %> #<%=k.id%></h4>
+              </div>
+              <div class='modal-body'>
+                <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                  <label for='email_to'>Envoyé à</label>
+                  <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                </div>
+                <div class='form-group'>
+                  <label for='email_object'>Objet</label>
+                  <input class='form-control' id='email_object' placeholder='Objet' type='text' value="<%=
+                    if k.status == 0
+                      "Facture #"+k.id.to_s+" de l'entreprise flatty pour la prestation "+ @invoice.title
+                    else
+                      "Relance facture "+k.id.to_s+" de l'entreprise flatty pour la prestation "+@invoice.title
+                    end%>">
+                </div>
+                <div class='form-group'>
+                  <label for='email_body'>Corps</label>
+                  <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+<%=
+if k.status == 0
+"Veuillez trouver ci-joint le facture de "+k.total.to_s+" euros pour la prestation de "+@invoice.title+". Dans l'attente de votre aimable règlement, je reste à votre disposition pour toute information complémentaire."
+else
+"Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
+end%>
+
+
+En votre aimable règlement,
+
+Francois Oudot
+92 Henry street
+94114 SF
+0666666666
+email</textarea>
+                </div>
+                <hr class='hr-normal'>
+                <div class='form-group'>
+                  <div class='checkbox'>
+                    <label>
+                      <input type='checkbox' checked id="attachement">
+Envoyer la facture attachée au mail                                </label>
+                  </div>
+                </div>
+                </form>
+  
+              </div>
+              <div class='modal-footer'>
+                <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                <button class='btn btn-success' data-dismiss='modal' type='button' onclick="sub_invoiceSend(<%= k.id %>,<%= @invoice.id%>);">Envoyer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                  </td>
+                </tr>
+              </div>
+
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+      </div>
+    </div>
+    </div>
+
+<!-- 3rd table quote late
+ -->
+    <div class='box <%=
+                    if @quotes_late==[]
+                      "hide"
+                    end%>'>
+      <div class="box-header">
+        <div class="title">
+          <i class="icon-inbox"></i>
+          Devis à relancer
+        </div>
+      </div>
+      <div class='box-content'> 
+        <div class="responsive-table">
+          <div class="scrollable-area">
+        <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+        <thead>
+          <tr>
+            <th width="10%"># </th>
+            <th width="25%"><p>Titre du devis </p>
+            &nbsp;&nbsp;&nbsp;Nom du client 
+            </th>
+            <th width="15%">Date de création 
+            </th>
+            <th width="15%">
+              Montant
+            </th>
+            <th width="10%">
+              Statut 
+            </th>
+            <th width="25%">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @quotes_late.each do |k| %>
+           <% 
+           @total=k.total
+            if @total==nil
+              @total=0
+            else   
+              @tax_rate=k.tax_rate
+              if @tax_rate==nil
+                @tax_rate=0
+              end        
+              @total=k.total*(1+@tax_rate)
+            end
+
            @client=Client.find_by_id(k.client_id)
            %>
            <div>
@@ -208,7 +390,7 @@ Envoyer la facture attachée au mail                                </label>
                        </div>
                   </td>
                   <td width="25%"> 
-                    <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
+                    <p><a href="" onclick="/quotes/<%=k.id%>"><%=k.title%></a></p>
                     <%= link_to(clients_path) do %>
                           <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
 
@@ -242,9 +424,114 @@ Envoyer la facture attachée au mail                                </label>
       </table>
       </div>
     </div>
-                  </div>
+    </div>
+    </div>
+
+<!-- 4th table - quote to be send
+ -->
+
+
+    <div class='box <%=
+                    if @quotes_tosend==[]
+                      "hide"
+                    end%>'>
+      <div class="box-header">
+        <div class="title">
+          <i class="icon-inbox"></i>
+          Devis à envoyer
+        </div>
+      </div>
+      <div class='box-content'> 
+        <div class="responsive-table">
+          <div class="scrollable-area">
+        <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
+        <thead>
+          <tr>
+            <th width="10%"># </th>
+            <th width="25%"><p>Titre du devis </p>
+            &nbsp;&nbsp;&nbsp;Nom du client 
+            </th>
+            <th width="15%">Date de création 
+            </th>
+            <th width="15%">
+              Montant
+            </th>
+            <th width="10%">
+              Statut 
+            </th>
+            <th width="25%">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+           <% @quotes_tosend.each do |k| %>
+           <% 
+
+           @total=k.total
+            if @total==nil
+              @total=0
+            else   
+              @tax_rate=k.tax_rate
+              if @tax_rate==nil
+                @tax_rate=0
+              end        
+              @total=k.total*(1+@tax_rate)
+            end
+
+           @client=Client.find_by_id(k.client_id)
+           %>
+           <div>
+                <tr>
+                  <td width="10%">
+                      <div class='text-center'> 
+                        # <%=k.id%>
+                       </div>
+                  </td>
+                  <td width="25%"> 
+                    <p><a href="" onclick="/quotes/<%=k.id%>"><%=k.title%></a></p>
+                    <%= link_to(clients_path) do %>
+                          <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+
+                        <% end %>
+                  </td>
+                  <td width="15%">
+                    <%=k.created_at.strftime("%d/%m/%Y")%>
+                  </td>
+                  <td width="15%">
+                    <p><%=k.total.to_s%> € TTC</p>
+                  </td>
+                  <td width="10%">
+                    <span class="label 
+                      <%="label-important" if k.status==0%><%="label-warning" if k.status==1%><%="label-success" if k.status==2%>"><%="Devis refusé" if k.status==0%><%="Devis en cours" if k.status==1%><%="Devis accepté" if k.status==2%></span>
+                  </td>
+                  <td width="25%">
+                    <h4>
+                    <a href="" class='has-tooltip' data-placement="top" data-original-title="Visualiser"onclick="window.open('/visu_pdf/quote_visu.<%= k.id %>','_blank');"><i class="icon-search"></i></a>
+                      &nbsp;
+                    <a class='has-tooltip' data-placement="top" data-original-title="Facturer" data-toggle="modal" href="/quotes/<%= k.id %>/invoice"><i class="icon-money"></i></a>
+                      &nbsp; 
+                    <%= link_to '<i class="icon-trash"></i>'.html_safe, k, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer ce devis?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
+                    </h4>
+
+                  </td>
+                </tr>
               </div>
-    <div class="row">
+
+          <% end %>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    </div>
+    </div>
+
+<!--   final  charts
+ -->
+    <div class='row <%=
+                    if @quotes_tosend==[]
+                      "hide"
+                    end%>"'>
                 <div class="col-sm-6 box">
                   <div class="box-header">
                     <div class="title">
@@ -374,4 +661,85 @@ Envoyer la facture attachée au mail                                </label>
           }
         });
       }
+
+
+      function goSend(siid,iid) {
+var siid=siid;
+var email_to;
+var email_object;
+var email_body;
+var attachement=false;
+
+
+if (document.getElementById("email_to")==null){
+  email_to="";
+}
+else{
+  email_to=document.getElementById("email_to").value;
+}
+if (document.getElementById("email_object")==null){
+  email_object="";
+}
+else{
+  email_object=document.getElementById("email_object").value;
+}
+if (document.getElementById("email_body")==null){
+  email_body="";
+}
+else{
+  email_body=document.getElementById("email_body").value;
+}
+if (document.getElementById("attachement")==null){
+  attachement=false;
+}
+else{
+  attachement=document.getElementById("attachement").checked;
+}
+var url_send= "/visu_pdf/sub_invoice_send";  
+var request=$.ajax({
+url: url_send,
+type: "PUT",
+beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+data: {m_param: {
+         email_object: email_object, 
+         email_to: email_to,
+         email_body: email_body,
+         siid: siid,
+         attachement: attachement
+       }}
+});
+
+request.done(finishSend(iid));
+}
+
+function finishSend(iid){
+  alert("Facture envoyée");
+  var url_show;
+  url_show="/report";
+ window.location.replace(url_show);
+}
+
+
+function sub_invoiceSend(siid,iid){
+  goSend(siid,iid);
+}
+
+function is_float(mixed_var) {
+  return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
+}
+
+function sub_invVisu(id){
+sub_invCreate(id,1);
+}
+function sub_invoiceVisu(id){
+var url="/visu_pdf/sub_invoice_visu."+id
+window.open(
+  url,
+  '_blank'
+);
+}
+function sub_invSave(id){
+sub_invCreate(id,2);
+
+}
     </script>

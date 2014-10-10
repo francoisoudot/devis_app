@@ -1,5 +1,4 @@
 
-<div id='orders'>
   <div class='row'>
     <div class='col-sm-12'>
       <div class='page-header'>
@@ -17,17 +16,19 @@
                 <div class='modal-header'>
                   <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
                   <h4 class='modal-title' id='myModalLabel'>Générer une facture pour une prestation</h4>
-                </div>
+                </div> 
                 <div class='modal-body'>
                   Voulez-vous faire une facture en partant d'un devis existant?
                 </div>
-                <div class='modal-footer'>
+                <div class='modal-footer'> 
                   <a class='btn btn-default' data-dismiss='modal' type='button' onclick='window.location.replace("invoices/new");'>Non</a>
                   <button class='btn btn-default' data-dismiss='modal' type='button' onclick='window.location.replace("/new_invoice");'>Oui</button>
                 </div>
               </div>
             </div>
           </div>  
+        </div> 
+        </div>  
           <p></p>
           <div class='box'>
             <div class='box-content'> 
@@ -48,213 +49,218 @@
                 </ul>
                 <div class="tab-content">
                   <div class="tab-pane <%=@tab1%>" id="tabcenter1">
-                              <div class='box'>
-            <div class='box-content'> 
-                    <div class='row'>
+<div class='box bordered-box orange-border' style='margin-bottom:0;'>
+      <div class='box-content box-no-padding'>
+        <div class='responsive-table'>
+          <div class='scrollable-area'>
+            <table class='data-table-column-filter table table-bordered table-striped' style='margin-bottom:0;'>
+        <thead>
+            <tr>
+                <th width="30%">Titre de la prestation</th>
+                <th width="20%">Nom du client</th>
+                <th width="15%">Montant</th>
+                <th width="15%">Date de création</th>
+                <th width="15%">% payé</th>
+                <th width="5%">Actions</th>
+            </tr>
+        </thead>
+ 
+        <tfoot>
+            <tr>
+                <th>Titre du devis</th>
+                <th>Nom du client</th>
+                <th>Montant</th>
+                <th>Date de création</th>
+                <th>% payé</th>
+                <th>Actions</th>
+            </tr>
+        </tfoot>
+ 
+        <tbody>
+        <% @invoices.each do |invoice| %>
+<!-- ruby code -->
+          <%
+            if invoice.total==nil 
+              @total=0
+              @total_paid=0
+              @pourc_paid=0
+            else
+               @total=invoice.total
+               @tax_rate=invoice.tax_rate
+               if @tax_rate==nil
+                 @tax_rate=0
+               end
+               @total_paid=invoice.total_paid
+               if @total_paid==nil
+                  @total_paid=0
+               end
+              @pourc_paid=(101 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i 
+            end
+              %>
+<!-- end ruby code -->
+               <tr>
+                  <td width="30%">
+                          <%= link_to(invoice) do %>
+                                    <b>#<%= invoice.id %> <%= invoice.title %></b>
 
-              <div class='col-sm-7'>
-                <div class='pull-left'>
-                  
-                  <p><h4>Titre du devis <a href="/invoices?order=1&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=1"><i class="icon-sort-down"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Nom client <a href="/invoices?order=3&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=1"><i class="icon-sort-down"></i></a>
-                  
-               </div>
-
-               <div class='pull-right'>
-                  
-                  <p><h4>Montant <a href="/invoices?order=5&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=1"><i class="icon-sort-down"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;Date de création <a href="/invoices?order=7&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=1"><i class="icon-sort-down"></i></a>
-                  
-               </div>
-             </div>
-             <div class='col-sm-4'>
-               <p><h4>Montant payé<a href="/invoices?order=9&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=1"><i class="icon-sort-down"></i></a></h4></p>
-                  &nbsp;&nbsp;&nbsp;% payé <a href="/invoices?order=11&tab=1"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=1"><i class="icon-sort-down"></i></a>
-             </div>
-             <div class='col-sm-1'>
-             </div>
-            </div>
-
-          </div>
-        </div>
-                      <% @invoices.each do |invoice| %>
-                      <%
-                                if invoice.total==nil 
-                                  @total=0
-                                  else
-                                 @total=invoice.total
-                                 end
-                                 @tax_rate=invoice.tax_rate
-                                 if @tax_rate==nil
-                                   @tax_rate=0
-                                 end
-                                 if invoice.total_paid==nil
-                                  @total_paid=0
-                                  else
-                                 @total_paid=invoice.total_paid
-                                 end
-                                 if @total == 0
-                                  @pourc_paid=0
-                                else
-                                  @pourc_paid=(100 * @total_paid.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i 
-                                end
-                                  %>
-
-
-                        <tr>
-                          <div class='col-sm-7'>
-                              <div class='pull-left'>
-                                <p>
-                                  <%= link_to(invoice) do %>
-                                    <h4>#<%= invoice.id %> <%= invoice.title %></h4>
-
-                                  <% end %>
-                                </p>
-                                <p>
-                                  <% @client=Client.find_by_id(invoice.client_id) %>
-
-                                    <%= link_to(clients_path) do %>
-                                      <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
-
-                                    <% end %>
-                                </p>  
-                              </div>
-                              <div class='text-right pull-right'>
-                                <h4 class='contrast price'><%= @total.to_d*(1+@tax_rate) %> € TTC</h4>
-                                <p>
-                                  <span><%= distance_of_time_in_words(Time.now, invoice.created_at) %></span>
-                                  <i class='icon-time'></i>
-                                </p>
-                              </div>
-                          </div>
-                          <div class='col-sm-4'>
-
-                            </p>
-                              <h4><%= @total_paid.to_d%> € payé TTC</h4>
-                              </p><p>
-                              <div class="progress">
-                                <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
-                              </div>
-                            </p>
-                          </div>
-                          <div class='col-sm-1'>
+                          <% end %>
+                  </td>
+                  <td width="20%">
+                      <% @client=Client.find_by_id(invoice.client_id) %>
+                      <%= link_to(clients_path) do %>
+                        <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+                      <% end %>
+                  </td>
+                  <td width="15%">
+                    <%= @total.to_d*(1+@tax_rate) %> € TTC
+                  </td>
+                  <td width="15%">
+                    <span><%= distance_of_time_in_words(Time.now, invoice.created_at) %></span>
+                    <i class='icon-time'></i>
+                  </td>
+                  <td width="15%">
+                      <%= @total_paid.to_d%> € payé TTC
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-success" style="width:<%=@pourc_paid%>%;"><%=@pourc_paid%>%</div>
+                      </div>
+                  </td>
+                  <td width="5%">
                            <div class='text-right text-center'>
                             <h4>
                             <%= link_to '<i class="icon-trash"></i>'.html_safe, invoice, method: :delete, data: { confirm: 'Etes vous sûr de vouloir supprimer cette facture?', placement: "top", original_title: "Supprimer" },class: 'has-tooltip' %>
                             </h4>
                            </div> 
-                          </div>      
-                          <div class='clearfix'></div>
-                          <hr class='hr-normal'>
-                        </tr>
-                      <% end %>                  
-                    </div>
-                  <div class="tab-pane <%=@tab2%>" id="tabcenter2">
-                    <table class='table table-bordered table-hover table-striped' id='table_sub_invoice'>
-                    <thead>
-                      <tr>
-                        <th width="10%"># <a href="/invoices?order=1&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=2&tab=2"><i class="icon-sort-down"></i></a></th>
-                        <th width="25%"><p>Titre de la facture <a href="/invoices?order=3&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=4&tab=2"><i class="icon-sort-down"></i></a></p>
-                        &nbsp;&nbsp;&nbsp;Nom du client <a href="/invoices?order=11&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=12&tab=2"><i class="icon-sort-down"></i></a>
-                        </th>
-                        <th width="15%">Echéance <a href="/invoices?order=5&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=6&tab=2"><i class="icon-sort-down"></i></a>
-                        </th>
-                        <th width="15%">
-                          % facturé <a href="/invoices?order=7&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=8&tab=2"><i class="icon-sort-down"></i></a>
-                        </th>
-                        <th width="10%">
-                          Statut <a href="/invoices?order=9&tab=2"><i class="icon-sort-up"></i></a> <a href="/invoices?order=10&tab=2"><i class="icon-sort-down"></i></a>
-                        </th>
-                        <th width="25%">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                       <% @sub_inv.each do |k| %>
-                       <% 
-                       @invoice=Invoice.find(k.invoice_id)
-                       @tax_rate=@invoice.tax_rate
-                       @total=@invoice.total
-                       @client=Client.find_by_id(@invoice.client_id)
-                       if @total!=nil
-                             @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
-                           else
-                              @si_pourc_paid=0
-                            end
-                            %>
-                       <div>
-                            <tr>
-                              <td width="10%">
-                                  <div class='text-center'> 
-                                    # <%=k.id%>
-                                   </div>
-                              </td>
-                              <td width="25%"> 
-                                <p><a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a></p>
-                                <%= link_to(clients_path) do %>
-                                      <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+                  </td>
+                </tr>
+            <% end %>  
+        </tbody>
+    </table>
+  </div>  
+  </div>
+  </div>
+    </div>  
+  </div>
+  </div>
 
-                                    <% end %>
-                              </td>
-                              <td width="15%">
-                                <%=k.endtime.strftime("%d/%m/%Y")%>
-                              </td>
-                              <td width="15%">
-                                <p><%=k.total.to_s%> € TTC</p>
-                                 <%= @si_pourc_paid %> %
-                              </td>
-                              <td width="10%">
-                                <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
-                              </td>
-                              <td width="25%">
-                                <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
-                                if k.status==2
-                                  "hide"
-                                end%>">Marquer payé | </a>
-                                <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
-                                if k.status!=2
-                                  "hide"
-                                end%>">Repasser en non payée</a>
-                                <a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
-                                if k.status != 0
-                                  "hide"
-                                end%>">Envoyer facture | </a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
-                                if k.status !=1
-                                  "hide"
-                                end%>">Relancer facture | </a><a data-confirm="Are you sure?" data-method="delete" href="/sub_invoice/<%=k.id%>" rel="nofollow" class="<%=
-                                if k.status==2
-                                  "hide"
-                                end%>">Supprimer</a>
-                   <div class='modal fade' id='modal-envoyer-<%=k.id%>' tabindex='1'>
-                      <div class='modal-dialog'>
-                        <div class='modal-content'>
-                          <div class='modal-header'>
-                            <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
-                            <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= k.title %> #<%=k.id%></h4>
-                          </div>
-                          <div class='modal-body'>
-                            <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
-                              <label for='email_to'>Envoyé à</label>
-                              <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
-                            </div>
-                            <div class='form-group'>
-                              <label for='email_object'>Objet</label>
-                              <input class='form-control' id='email_object' placeholder='Objet' type='text' value="<%=
-                                if k.status == 0
-                                  "Facture #"+k.id.to_s+" de l'entreprise flatty pour la prestation "+ @invoice.title
-                                else
-                                  "Relance facture "+k.id.to_s+" de l'entreprise flatty pour la prestation "+@invoice.title
-                                end%>">
-                            </div>
-                            <div class='form-group'>
-                              <label for='email_body'>Corps</label>
-                              <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
+  <!-- table sub invoices -->
+  <div class="tab-pane <%=@tab2%>" id="tabcenter2">
+    <div class='box bordered-box orange-border' style='margin-bottom:0;'>
+      <div class='box-content box-no-padding'>
+        <div class='responsive-table'>
+          <div class='scrollable-area'>
+            <table class='data-table-column-filter table table-bordered table-striped' style='margin-bottom:0;'>
+        <thead>
+            <tr>
+                <th width="5%">#</th>
+                <th width="20%">Titre de la facture</th>
+                <th width="20%">Nom du client</th>
+                <th width="15%">Echéance</th>
+                <th width="15%">% facturé</th>
+                <th width="15%">Statut</th>
+                <th width="10%">Actions</th>
+            </tr>
+        </thead>
+ 
+        <tfoot>
+            <tr>
+                <th width="5%">#</th>
+                <th width="20%">Titre de la facture</th>
+                <th width="20%">Nom du client</th>
+                <th width="15%">Echéance</th>
+                <th width="15%">% facturé</th>
+                <th width="15%">Statut</th>
+                <th width="10%">Actions</th>
+            </tr>
+        </tfoot>
+ 
+        <tbody>
+       <% @sub_inv.each do |k| %>
+         <% 
+         @invoice=Invoice.find(k.invoice_id)
+         @tax_rate=@invoice.tax_rate
+         if @tax_rate==nil
+          @tax_rate=0
+        end
+         @total=@invoice.total
+         @client=Client.find_by_id(@invoice.client_id)
+         if @total!=nil
+               @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
+         else
+            @si_pourc_paid=0
+        end
+        %>
+        <tr>
+            <td width="5%">
+                <div class='text-center'> 
+                  # <%=k.id%>
+                 </div>
+            </td>
+            <td width="20%">
+              <a href="" onclick="sub_invoiceVisu(<%=k.id%>)"><%=k.title%></a>
+            </td>
+            <td width="20%">
+              <%= link_to(clients_path) do %>
+                  <%=@client.first_name.capitalize%> <%=@client.last_name.capitalize%>                                            
+              <% end %>
+            </td>
+            <td width="15%">
+                <%=k.endtime.strftime("%d/%m/%Y")%>
+            </td> 
+            <td width="15%">
+              <p><%=k.total.to_s%> € TTC</p>
+               <%= @si_pourc_paid %> %
+            </td>
+            <td width="15%">
+              <span class="label <%="label-warning" if k.status==0%><%="label-success" if (k.status==1 && k.endtime>Time.now)%><%="label-important" if (k.status==1 && k.endtime<Time.now)%><%="label-success" if k.status==2%>"><%="Facture non envoyée" if k.status==0%><%="Facture envoyée" if (k.status==1 && k.endtime>Time.now)%><%="Facture en retard" if (k.status==1 && k.endtime<Time.now)%><%="Facture payée" if k.status==2%></span>
+            </td>
+            <td width="10%">
+                          <a data-method="put" href="/sub_invoice_mark_paid/<%=k.id%>" class="<%=
+                          if k.status==2
+                            "hide"
+                          end%>">Marquer payé|</a>
+                          <a data-method="put" href="/sub_invoice_mark_unpaid/<%=k.id%>" class="<%=
+                          if k.status!=2
+                            "hide"
+                          end%>">Repasser en non payée</a>
+                          <a data-toggle="modal"  href="#modal-envoyer-<%=k.id%>" class="<%=
+                          if k.status != 0
+                            "hide"
+                          end%>">Envoyer|</a><a data-toggle="modal" href="#modal-envoyer-<%=k.id%>" class="<%=
+                          if k.status !=1
+                            "hide"
+                          end%>">Relancer|</a><a data-confirm="Are you sure?" data-method="delete" href="/sub_invoice/<%=k.id%>" rel="nofollow" class="<%=
+                          if k.status==2
+                            "hide"
+                          end%>">Supprimer</a>
+             <div class='modal fade' id='modal-envoyer-<%=k.id%>' tabindex='1'>
+                <div class='modal-dialog'>
+                  <div class='modal-content'>
+                    <div class='modal-header'>
+                      <button aria-hidden='true' class='close' data-dismiss='modal' type='button'>×</button>
+                      <h4 class='modal-title' id='myModalLabel'>Mail pour la facture <%= k.title %> #<%=k.id%></h4>
+                    </div>
+                    <div class='modal-body'>
+                      <form class="form" style="margin-bottom: 0;" method="post" action="#" accept-charset="UTF-8"><input name="authenticity_token" type="hidden" /><div class='form-group'>
+                        <label for='email_to'>Envoyé à</label>
+                        <input class='form-control' id='email_to' placeholder='Envoyé à' type='text' value='<%= @client.email %>'>
+                      </div>
+                      <div class='form-group'>
+                        <label for='email_object'>Objet</label>
+                        <input class='form-control' id='email_object' placeholder='Objet' type='text' value="<%=
+                          if k.status == 0
+                            "Facture #"+k.id.to_s+" de l'entreprise flatty pour la prestation "+ @invoice.title
+                          else
+                            "Relance facture "+k.id.to_s+" de l'entreprise flatty pour la prestation "+@invoice.title
+                          end%>">
+                      </div>
+                      <div class='form-group'>
+                        <label for='email_body'>Corps</label>
+                        <textarea class='form-control' id='email_body' placeholder='Corps du mail' rows='7'>Bonjour <%= @client.first_name.capitalize %>,
 <%=
 if k.status == 0
-  "Veuillez trouver ci-joint le facture de "+k.total.to_s+" euros pour la prestation de "+@invoice.title+". Dans l'attente de votre aimable règlement, je reste à votre disposition pour toute information complémentaire."
+"Veuillez trouver ci-joint le facture de "+k.total.to_s+" euros pour la prestation de "+@invoice.title+". Dans l'attente de votre aimable règlement, je reste à votre disposition pour toute information complémentaire."
 else
-  "Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
+"Je vous rappelle que la facture # "+k.id.to_s+" est dû pour le "+k.endtime.strftime("%d/%m/%Y").to_s
 end%>
 
 
@@ -265,33 +271,31 @@ Francois Oudot
 94114 SF
 0666666666
 email</textarea>
-                            </div>
-                            <hr class='hr-normal'>
-                            <div class='form-group'>
-                              <div class='checkbox'>
-                                <label>
-                                  <input type='checkbox' checked id="attachement">
+                      </div>
+                      <hr class='hr-normal'>
+                      <div class='form-group'>
+                        <div class='checkbox'>
+                          <label>
+                            <input type='checkbox' checked id="attachement">
 Envoyer la facture attachée au mail                                </label>
-                              </div>
-                            </div>
-                            </form>
-              
-                          </div>
-                          <div class='modal-footer'>
-                            <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
-                            <button class='btn btn-success' data-dismiss='modal' type='button' onclick="sub_invoiceSend(<%= k.id %>,<%= @invoice.id%>);">Envoyer</button>
-                          </div>
                         </div>
                       </div>
+                      </form>
+        
                     </div>
+                    <div class='modal-footer'>
+                      <button class='btn btn-default' data-dismiss='modal' type='button'>Fermer sans envoyer</button>
+                      <button class='btn btn-success' data-dismiss='modal' type='button' onclick="sub_invoiceSend(<%= k.id %>,<%= @invoice.id%>);">Envoyer</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                              </td>
-                            </tr>
-                          </div>
-
-                      <% end %>
-                    </tbody>
-                  </table>
+                </td>
+              </tr>
+        <% end %>
+      </tbody>
+    </table>
 
                   </div>
                 </div>
