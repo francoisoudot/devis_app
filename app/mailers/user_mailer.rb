@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
-  default from: 'no-reply@whatever.net',
-          reply_to: 'francois.oudot@gmail.com'
+  default from: 'no-reply@adrienbidinot.net',
+          reply_to: 'ad-bidinot@hotmail.fr'
 
 
   def send_quote(quote)
@@ -11,8 +11,8 @@ class UserMailer < ActionMailer::Base
     attachments["devis.pdf"] = { :mime_type => 'application/pdf', :content => pdf.render }
   	if @client.email != nil
     	mail(to: @client.email,
-            from: 'no-reply@whatever.net', 
-            cc: "alexis.bidinot@gmail.com",
+            from: 'no-reply@adrienbidinot.net', 
+            cc: "ad-bidinot@hotmail.fr",
            subject: subject
            )
     end
@@ -30,8 +30,8 @@ def send_quote2(quote,to,obj,bod,att)
     end
     if @client.email != nil
       mail(to: mail_to, 
-           from: 'no-reply@whatever.net', 
-           cc: "alexis.bidinot@gmail.com",
+           from: 'no-reply@adrienbidinot.net', 
+           cc: "ad-bidinot@hotmail.fr",
            subject: subject,
            body: mail_body
            )
@@ -53,8 +53,8 @@ def send_quote2(quote,to,obj,bod,att)
     end
     if @client.email != nil
       mail(to: mail_to, 
-           from: 'no-reply@whatever.net', 
-           cc: "alexis.bidinot@gmail.com",
+           from: 'no-reply@adrienbidinot.net', 
+           cc: "ad-bidinot@hotmail.fr",
            subject: subject,
            body: mail_body
            )
