@@ -35,7 +35,8 @@ class QuotePdf < Prawn::Document
     repeat :all do
       #Create a bounding box and move it up 18 units from the bottom boundry of the page
       bounding_box [bounds.left, bounds.bottom + 8], width: bounds.width do
-        text "Société ADRIEN BIDINOT dommiciliée au 27 RUE RENE BRUN à YERRES (91330) - Tel: 06 87 04 79 50 - Email: ad-bidinot@hotmail.fr - RCS: 792 752 172", size: 8, align: :center
+        text "Société ADRIEN BIDINOT dommiciliée au 27 RUE RENE BRUN à YERRES (91330) - Tel: 06 87 04 79 50 - Email: ad-bidinot@hotmail.fr
+        RCS: 792 752 172", size: 8, align: :center
       end
       bounding_box([bounds.right - 30,bounds.bottom], :width => 60, :height => 20) do
         count = page_count
