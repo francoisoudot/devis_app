@@ -184,7 +184,7 @@
         end
          @total=@invoice.total
          @client=Client.find_by_id(@invoice.client_id)
-         if @total!=nil
+         if @total!=nil && @total.to_d!=0
                @si_pourc_paid=(100 * k.total.to_d / (@total.to_d*(1+@tax_rate.to_d))).to_i
          else
             @si_pourc_paid=0
