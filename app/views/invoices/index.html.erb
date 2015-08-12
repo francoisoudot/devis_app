@@ -114,7 +114,7 @@
                       <% end %>
                   </td>
                   <td width="15%">
-                    <%= @total.to_d*(1+@tax_rate) %> € TTC
+                    <%= @total.to_d*(1+@tax_rate) if @total!=nil %> € TTC
                   </td>
                   <td width="15%">
                     <span><%= distance_of_time_in_words(Time.now, invoice.created_at) %></span>
