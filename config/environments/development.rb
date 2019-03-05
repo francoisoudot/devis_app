@@ -31,8 +31,8 @@ config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   
   ActionMailer::Base.smtp_settings = {
-  # :user_name => 'francois.oudot',
-  # :password => 'fro261813',
+  # :user_name => 'xxx',
+  # :password => 'xxx',
   # :domain => 'http://whatever.com/',
   # :address => 'smtp.sendgrid.net',
   # :port => 587,
@@ -41,8 +41,8 @@ config.action_mailer.raise_delivery_errors = true
   :address              => "smtp.gmail.com",
   :port                 => 587,
   :domain               => 'baci.lindsaar.net',
-  :user_name            => 'momganizer@gmail.com',
-  :password             => 'fromomganizer',
+  :user_name            => 'xxx',
+  :password             => 'xxx',
   :authentication       => 'plain',
   :enable_starttls_auto => true  
 }
